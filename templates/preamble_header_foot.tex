@@ -1,0 +1,55 @@
+% Font and Colours
+\renewcommand{\familydefault}{\sfdefault}
+\color{textcolor}
+
+% Header and Footer
+\pagestyle{fancy}
+\fancyhead{} % Set header to blank
+\fancyfoot{} % Set footer to blank
+\fancyhead[L]{
+\noindent
+\begin{multicols}{3}
+\begin{tabulary}{5.8cm}{C}
+    \SetRowColor{darkbackground}
+    \vspace{-7pt}
+    {\parbox{\dimexpr\textwidth-2\fboxsep\relax}{\noindent
+        %\hspace*{-6pt}\includegraphics[height=1.5cm, width=5.8cm]{img/optime-logo.png}
+        }
+    }
+\end{tabulary}
+\columnbreak
+\begin{tabulary}{11cm}{L}
+    \vspace{-2pt}\large{\bf{\textcolor{darkbackground}{\textrm{\gtitle}}}} \\
+    \normalsize{by \textcolor{darkbackground}{\gauthor}}
+\end{tabulary}
+\end{multicols}}
+
+\fancyfoot[L]{ \footnotesize
+\noindent
+\begin{multicols}{3}
+\begin{tabulary}{5.8cm}{LL}
+  \SetRowColor{footbackground}
+  \colouredMulticolumn{2}{\bf\textcolor{white}{Cheatographer}}  \\
+  \vspace{-2pt}\gauthor \\
+  \end{tabulary}
+\vfill
+\columnbreak
+\begin{tabulary}{5.8cm}{L}
+  \SetRowColor{footbackground}
+  \colouredMulticolumn{1}{\bf\textcolor{white}{Cheat Sheet}}  \\
+   \vspace{-2pt}Published \gdate.\\
+   Updated \today\\
+   Page {\thepage} of \pageref{LastPage}.
+\end{tabulary}
+\vfill
+\columnbreak
+\begin{tabulary}{5.8cm}{L}
+  \SetRowColor{footbackground}
+  \colouredMulticolumn{1}{\bf\textcolor{white}{Footer}}  \\
+  \SetRowColor{white}
+  \vspace{-5pt}
+  %\includegraphics[width=48px,height=48px]{img/optime-logo.png}
+  FootNote
+\end{tabulary}
+\end{multicols}}
+

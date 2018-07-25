@@ -1,0 +1,311 @@
+% Lengths and widths
+\addtolength{\textwidth}{6cm}
+\addtolength{\textheight}{-1cm}
+\addtolength{\hoffset}{-3cm}
+\addtolength{\voffset}{-2cm}
+\setlength{\tabcolsep}{0.2cm} % Space between columns
+\setlength{\headsep}{-12pt} % Reduce space between header and content
+\setlength{\headheight}{85pt} % If less, LaTeX automatically increases it
+\renewcommand{\footrulewidth}{0pt} % Remove footer line
+\renewcommand{\headrulewidth}{0pt} % Remove header line
+%\renewcommand{\seqinsert}{\ifmmode\allowbreak\else\-\fi} % Hyphens in seqsplit
+% This two commands together give roughly
+% the right line height in the tables
+\renewcommand{\arraystretch}{1.3}
+\onehalfspacing
+
+% Commands
+\newcommand{\SetRowColor}[1]{\noalign{\gdef\RowColorName{#1}}\rowcolor{\RowColorName}} % Shortcut for row colour
+%\newcommand{\mymulticolumn}[3]{\multicolumn{#1}{>{\columncolor{\RowColorName}}#2}{#3}} % For coloured multi-cols
+\newcommand{\colouredMulticolumn}[2]{\multicolumn{#1}{>{\columncolor{\RowColorName}}x{0.9\linewidth}}{#2}} % For coloured multi-cols
+\newcolumntype{x}[1]{>{\raggedright}p{#1}} % New column types for ragged-right paragraph columns
+\newcommand{\tn}{\tabularnewline} % Required as custom column type in use
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand*{\suchthat}{\;\ifnum\currentgrouptype=16 \middle\fi|\;}
+\newcommand{\textasterisk}{*}
+%\def\textunderscore{\char\`_}
+\DeclareMathOperator{\Tr}{Tr}
+
+% Centering part/sections
+\allsectionsfont{\centering}
+
+\newtcblisting{code}[2]{%
+  listing engine=minted,
+  colback=lightbackground,
+  colframe=darkbackground,
+  listing only,
+  %breakable,
+  minted language=#1,
+  minted style=perldoc,
+  minted options={linenos=false,texcl=true,breaklines=true, fontsize=\scriptsize, escapeinside=\%\% ,mathescape=true},
+  % see https://github.com/gpoore/minted/issues/179 for escape issues
+  left=1mm,
+  title=\textbf{\textcolor{textcolor}{\faCode}\textsubscript{\footnotesize\textcolor{textcolor}{\texttt{#1}}}~#2}
+}
+
+%\NewDocumentCommand{\piechart}{m O{text=inside, sum=auto, explode = 0.1}}{
+%  \resizebox{0.9\linewidth}{!}{
+%    \begin{tikzpicture}
+%      \pie [#2]{#1}
+%    \end{tikzpicture}
+%    }
+%}
+\newcommand{\pieChart}[2][1]{
+  \vspace*{0.3em}
+  \resizebox{\linewidth}{!}{
+      \begin{tikzpicture}
+
+      \pgfkeys{/pgf/number format/.cd,
+      fixed,fixed zerofill,precision=0,
+      set thousands separator={\,}}
+
+        \pie [sum=auto, text=legend, explode = 0.1, scale numbers=#1]{#2}
+      \end{tikzpicture}
+    }
+}
+
+\newcommand{\image}[2][]{%
+\begin{center}
+\tcbox[colframe=darkbackground, enhanced jigsaw, boxsep=0pt, top=0pt, bottom=0pt, left=0pt, right=0pt, 
+boxrule=0.4pt, drop fuzzy shadow, clip upper,
+toptitle=2pt,bottomtitle=2pt,nobeforeafter,
+title=~~\textbf{\textcolor{textcolor}{\faImage}~#1}]
+{\includegraphics[width=\linewidth-4mm]{#2}}
+\end{center}}
+
+\newtcolorbox{quotes}{%
+    enhanced jigsaw, 
+    colback=lightbackground,
+    fontupper=\color{textcolor},
+    fontlower=\color{textcolor},
+    %breakable,      % allow page breaks
+    frame hidden,   % hide the default frame
+    left=0.5cm,       % left margin
+    right=0.5cm,      % right margin
+    overlay={%
+        \node [scale=8,
+            text=black,
+            inner sep=0pt,] at ([xshift=0.1cm,yshift=-1cm]frame.north west){``}; 
+        \node [scale=8,
+            text=black,
+            inner sep=0pt,] at ([xshift=-0.1cm]frame.south east){''};  
+            },
+        % paragraph skips obeyed within tcolorbox
+                parbox=false,
+}
+
+
+% 0.0
+\newenvironment{oneColumn}
+{\tabularx{0.9\linewidth}{X}}
+{\endtabularx}
+
+
+% (5.377 - 0.4) / 2
+\newenvironment{twoColumns}
+{\tabularx{0.9\linewidth}{x{0.3\linewidth - 0.2cm} x{0.6\linewidth - 0.2cm}}}
+{\endtabularx}
+
+% (5.377 - 0.8) / 3
+\newenvironment{threeColumns}
+{\tabularx{0.9\linewidth}{p{0.3\linewidth - 0.266cm} p{0.3\linewidth- 0.267cm} p{0.3\linewidth- 0.267cm}}}
+{\endtabularx}
+
+% (5.377 - 1.2) / 4
+\newenvironment{fourColumns}
+{\tabularx{0.9\linewidth}{p{0.225\linewidth- 0.3cm} p{0.225\linewidth - 0.3cm} p{0.225\linewidth - 0.3cm} p{0.225\linewidth - 0.3cm}}}
+{\endtabularx}
+
+\newenvironment{plainTex}
+{\tabularx{0.9\linewidth}{X}}
+{\endtabularx}
+
+\newenvironment{algo}
+{\tabularx{0.9\linewidth}{X}}
+{\endtabularx}
+
+\newenvironment{faq}
+{\tabularx{0.9\linewidth}{X}}
+{\endtabularx}
+
+%\newenvironment{piechart}
+%{\tabularx{0.9\linewidth}{X}}
+%{\endtabularx}
+
+\newenvironment{vtime}
+{\tabularx{0.9\linewidth}{X}}
+{\endtabularx}
+
+\newenvironment{barChart}
+{\tabularx{0.9\linewidth}{p{0.3\linewidth} p{0.3\linewidth} p{0.3\linewidth}}}
+{\endtabularx}
+
+
+%%%%%%%%%%%%%% Timeline %%%%%%%%%%%%%
+
+%%% from https://tex.stackexchange.com/a/197447/125774
+
+% code by Andrew:
+% https://tex.stackexchange.com/a/28452/13304
+\makeatletter
+\let\matamp=&
+\catcode`\&=13
+\makeatletter
+\def&{\iftikz@is@matrix
+  \pgfmatrixnextcell
+  \else
+  \matamp
+  \fi}
+\makeatother
+
+\newcounter{lines}
+\def\endlr{\stepcounter{lines}\\}
+
+\newcounter{vtml}
+\setcounter{vtml}{0}
+
+\newif\ifvtimelinetitle
+\newif\ifvtimebottomline
+\tikzset{description/.style={
+  column 2/.append style={#1}
+ },
+ timeline color/.store in=\vtmlcolor,
+ timeline color=red!80!black,
+ timeline color st/.style={fill=\vtmlcolor,draw=\vtmlcolor},
+ use timeline header/.is if=vtimelinetitle,
+ use timeline header=false,
+ add bottom line/.is if=vtimebottomline,
+ add bottom line=false,
+ timeline title/.store in=\vtimelinetitle,
+ timeline title={},
+ line offset/.store in=\lineoffset,
+ line offset=4pt,
+}
+
+\NewEnviron{vtimeline}[1][]{%
+\setcounter{lines}{1}%
+\stepcounter{vtml}%
+\begin{tikzpicture}[column 1/.style={anchor=east},
+ column 2/.style={anchor=west,text width=4.377cm},
+ text depth=0pt,text height=1ex,
+ row sep=5ex,
+ column sep=1em,
+ #1
+]
+\matrix(vtimeline\thevtml)[matrix of nodes]{\BODY};
+\pgfmathtruncatemacro\endmtx{\thelines-1}
+\path[timeline color st] 
+($(vtimeline\thevtml-1-1.north east)!0.5!(vtimeline\thevtml-1-2.north west)$)--
+($(vtimeline\thevtml-\endmtx-1.south east)!0.5!(vtimeline\thevtml-\endmtx-2.south west)$);
+\foreach \x in {1,...,\endmtx}{
+ \node[circle,timeline color st, inner sep=0.15pt, draw=white, thick] 
+ (vtimeline\thevtml-c-\x) at 
+ ($(vtimeline\thevtml-\x-1.east)!0.5!(vtimeline\thevtml-\x-2.west)$){};
+ \draw[timeline color st](vtimeline\thevtml-c-\x.west)--++(-3pt,0);
+ }
+ \ifvtimelinetitle%
+  \draw[timeline color st]([yshift=\lineoffset]vtimeline\thevtml.north west)--
+  ([yshift=\lineoffset]vtimeline\thevtml.north east);
+  \node[anchor=west,yshift=16pt,font=\large]
+   at (vtimeline\thevtml-1-1.north west) 
+   {\textsc{Timeline \thevtml}: \textit{\vtimelinetitle}};
+ \else%
+  \relax%
+ \fi%
+ \ifvtimebottomline%
+   \draw[timeline color st]([yshift=-\lineoffset]vtimeline\thevtml.south west)--
+  ([yshift=-\lineoffset]vtimeline\thevtml.south east);
+ \else%
+   \relax%
+ \fi%
+\end{tikzpicture}
+}
+
+%%%%%%%%%%%%%% Calendar %%%%%%%%%%%%%%%%%%%%%
+\makeatletter
+% Define our own style
+\tikzstyle{week list sunday}=[
+  % Note that we cannot extend from week list,
+  % the execute before day scope is cumulative
+  execute before day scope={%
+    \ifdate{day of month=1}{\ifdate{equals=\pgfcalendarbeginiso}{}{
+        % On first of month, except when first date in calendar.
+        \pgfmathsetlength{\pgf@y}{\tikz@lib@cal@month@yshift}%
+        \pgftransformyshift{-\pgf@y}
+      }}{}%
+  },
+  execute at begin day scope={%
+    % Because for TikZ Monday is 0 and Sunday is 6,
+    % we can't directly use \pgfcalendercurrentweekday,
+    % but instead we define \c@pgf@counta (basically) as:
+    % (\pgfcalendercurrentweekday + 1) % 7
+    \pgfmathsetlength\pgf@x{\tikz@lib@cal@xshift}%
+    \ifnum\pgfcalendarcurrentweekday=6
+    \c@pgf@counta=0
+    \else
+    \c@pgf@counta=\pgfcalendarcurrentweekday
+    \advance\c@pgf@counta by 1
+    \fi
+    \pgf@x=\c@pgf@counta\pgf@x
+    % Shift to the right position for the day.
+    \pgftransformxshift{\pgf@x}
+  },
+  execute after day scope={
+    % Week is done, shift to the next line.
+    \ifdate{Saturday}{
+      \pgfmathsetlength{\pgf@y}{\tikz@lib@cal@yshift}%
+      \pgftransformyshift{-\pgf@y}
+    }{}%
+  },
+  % This should be defined, glancing from the source code.
+  tikz@lib@cal@width=7
+]
+\tikzoption{day headings}{\tikzstyle{day heading}=[#1]}
+\tikzstyle{day heading}=[]
+\tikzstyle{day letter headings}=[
+  execute before day scope={\ifdate{day of month=1}{%
+      \pgfmathsetlength{\pgf@ya}{\tikz@lib@cal@yshift}%
+      \pgfmathsetlength\pgf@xa{\tikz@lib@cal@xshift}%
+      \pgftransformyshift{-\pgf@ya}
+      \foreach \d/\l in {0/D,1/S,2/T,3/Q,4/Q,5/S,6/S} {
+        \pgf@xa=\d\pgf@xa%
+        \pgftransformxshift{\pgf@xa}%
+        \pgftransformyshift{\pgf@ya}%
+        \node[every day, day heading]{\tiny\l};%
+      } 
+    }{}%
+  }%
+]
+\makeatother
+
+\tikzstyle{labest}=[font=\footnotesize, fill=orange!50, inner sep=2pt]
+\tikzstyle{evento}=[font=\footnotesize, fill=red!50, inner sep=2pt]
+
+% The actual calendar is now rather easy:
+
+
+%%%%%%%%%%%%%%%%% pgf-pie %%%%%%%%%%%%%%%%%%%%%
+
+% https://tex.stackexchange.com/questions/433182/pgf-pie-dimension-too-large
+
+\makeatletter
+% new key
+\pgfkeys{/scale numbers/.store in=\pgfpie@scale,
+         /scale numbers=1}
+% macro for scaling
+\newcommand*{\pgfpie@scalenumber}[1]{%
+    \begingroup
+    \pgfkeys{/pgf/fpu}% enable fpu only locally
+    \pgfmathparse{#1*\pgfpie@scale}%
+    %\pgfmathroundtozerofill{\pgfmathresult}%
+    \pgfmathprintnumber{\pgfmathresult}%
+    \endgroup
+}
+% patching the internal commands
+\patchcmd{\pgfpie@slice}{\beforenumber#3}{\beforenumber\pgfpie@scalenumber{#3}}{}{}
+\patchcmd{\pgfpie@slice}{\beforenumber#3}{\beforenumber\pgfpie@scalenumber{#3}}{}{}
+\patchcmd{\pgfpie@square}{\beforenumber#3}{\beforenumber\pgfpie@scalenumber{#3}}{}{}
+\patchcmd{\pgfpie@square}{\beforenumber#3}{\beforenumber\pgfpie@scalenumber{#3}}{}{}
+\patchcmd{\pgfpie@cloud}{\beforenumber#3}{\beforenumber\pgfpie@scalenumber{#3}}{}{}
+\patchcmd{\pgfpie@cloud}{\beforenumber#3}{\beforenumber\pgfpie@scalenumber{#3}}{}{}
+\makeatother

@@ -1,0 +1,67 @@
+\documentclass[10pt,a4paper]{article}
+
+%\usepackage{lmodern, charter}
+\renewcommand{\bfdefault}{bx}
+\usepackage[dvipsnames]{xcolor} % For hex colours [before tikz]
+\usepackage{tikz}
+\usetikzlibrary{calc,matrix,fpu}
+
+\usepackage{pgf-pie}
+
+
+
+
+\usepackage[hypertexnames=true]{hyperref}
+\usepackage{caption}
+\usepackage{etoolbox}
+\usepackage{subcaption} % for caption of multiple figure
+\usepackage[all]{hypcap} % for going to the top of an image when a figure reference is clicked. Placed after hyperref.
+\hypersetup{
+    colorlinks,
+    linkcolor={linkcolor},
+    citecolor={citecolor}, 
+    urlcolor={urlcolor}
+}
+
+% Packages
+\usepackage{fancyhdr}           % For header and footer
+\usepackage{multicol}           % Allows multicols in tables
+\usepackage{tabularx}           % Intelligent column widths
+\usepackage{tabulary}           % Used in header and footer
+\usepackage{soulutf8}           % to underline support linebreak 
+\usepackage{hhline}             % Border under tables
+\usepackage{graphicx}           % For images
+
+%\usepackage[utf8]{inputenc}     % For unicode character support 
+%\usepackage[T1]{fontenc}        % Without this we get weird character replacements
+\usepackage{colortbl}           % For coloured tables
+\usepackage{setspace}           % For line height
+\usepackage{lastpage}           % Needed for total page number
+\usepackage{seqsplit}           % Splits long words.
+%\usepackage{menukeys}           % menus/keys/path display [after xcolor]
+%\usepackage{opensans}          % Can't make this work so far. Shame. Would be lovely.
+% Most of the following are not required for the majority
+% of cheat sheets but are needed for some symbol support.
+\usepackage{amsmath}            % Symbols
+\usepackage{amsfonts}           % Symbols
+%\usepackage{MnSymbol}           % Symbols
+%\usepackage{wasysym}            % Symbols
+%\usepackage{clrscode3e}
+
+%%%%% XeLaTeX %%%%%%%%
+\usepackage[BoldFont,SlantFont]{xeCJK}
+\setCJKmainfont{HanaMinA}
+
+%\usepackage[german,spanish,italian,french,english]{babel}              % Languages
+\usepackage{sectsty} % section centering
+%\usepackage{algorithm}
+%\usepackage[noend]{algpseudocode}
+\usepackage{minted}
+\usepackage{fontspec} % xeLaTeX (for fontawesome)
+\usepackage{fontawesome}
+\usepackage{xparse}
+\usepackage{verbatim}
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{minted,skins,breakable}
+
+
