@@ -116,6 +116,16 @@ function evalFontawesome(cmdArray) {
     return buildFASymbol(cmdArray["contents"])
 }
 
+# Evaluate include command
+function evalInclude(cmdArray) {
+    if (fileExists(cmdArray["contents"])) {
+        return readFrom(cmdArray["contents"])
+    } else {
+        warn("No such file or directory : "cmdArray["contents"])
+        return NULLSTR
+    }
+}
+
 
 #function evalImage(cmdArray) {
 #    return buildLaTeXCmd(LaTeXCmd["graphic block"], cmdArray["content"]

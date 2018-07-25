@@ -380,7 +380,12 @@ function imageBlock (blockHeader, contents) {
     for (i in contentsLine) {
         line = evalLine(contentsLine[i])
         if (line){
-                copyTo(line, Files["output"]["dir"] BlocksNB)
+                if (fileExists(line)){
+                    copyTo(line, Files["output"]["dir"] BlocksNB)
+                } else {
+                    warn("Image \"" line "\" doesn't exist")
+                    return NULLSTR
+                }
         }
     }
     return buildLaTeXCmd(BlocksName["img"], BlocksNB, NULLSTR, getBlockTitle(blockHeader))
