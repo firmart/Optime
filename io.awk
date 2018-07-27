@@ -2,6 +2,7 @@
 
 @include "commons.awk"
 @include "string.awk"
+@include "array.awk"
 
 BEGIN {
     initIOConst()
@@ -67,7 +68,7 @@ function cleanContentsOf(file) {
 
 # Get the path where script was executed
 function getCurrentPath(){
-    return getOutput("pwd")
+    return ENVIRON["PWD"] ? ENVIRON["PWD"] : getOutput("pwd")
 }
 
 # Return non-zero if file exists; otherwise return 0.
@@ -80,17 +81,67 @@ function getOutput(command,    content, line) {
     content = NULLSTR
     while ((command |& getline line) > 0)
         content = (content ? content "\n" : NULLSTR) line
+    close(command)
     return content
-}
-
-# Get filename of a file
-function getFilename(string) {
-    basename = getOutput("basename " string)
-    n = split(basename, group, ".")
-    return (n == 1 ? basename : join(group, ".", 1, n - 1))
 }
 
 # Remove directory
 function removeDir(dir) {
     system("rm -rf " dir)
 }
+
+###
+### Path related functions
+###
+
+# Get filename of a file
+function getFilename(path,    pathArr, group) {
+    split(path, pathArr, "/")
+    split(pathArr[length(pathArr)], group, ".")
+    return join(group, ".", 1, length(group) - 1)
+}
+
+
+# get absolute path of file/dir
+#     path    : file/dir path
+#     dotPath : string which expands "."
+function getAbsolutePath(path, dotPath,
+                         ##############
+                         charArr) {
+
+    if (isNotDefined(dotPath)) {
+        dotPath = getCurrentPath()
+    }
+
+    explode(path, charArr) 
+
+    if (charArr[1] == "/") {
+        return path
+    } else if (charArr[2] != "/") {
+        return dotPath "/" path
+    } else {
+        if (charArr[1] == "~") {
+            return ENVIRON["HOME"] join(charArr, NULLSTR, 2)
+        } else if (charArr[1] == ".") {
+            return dotPath join(charArr, NULLSTR, 2)
+        }
+   }
+}
+
+# get absolute path relatively of a file
+#     filepath : file path
+#     path     : path relative of file
+function getAbsolutePathInFile(filepath, path, 
+                               ###############
+                               fileDir) {
+
+    fileDir = getFileDir(filepath)
+    return getAbsolutePath(path, fileDir)
+}
+
+function getFileDir(path,     absPath, absPathArr) {
+    absPath = getAbsolutePath(path)
+    split(absPath, absPathArr, "/")
+    return join(absPathArr, "/", 1, length(absPathArr) - 1)
+}
+

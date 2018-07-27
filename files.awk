@@ -1,7 +1,9 @@
-#! /usr/bin/gawk -f
+#! /usr/bin/gawk -f 
 
-@include "string.awk"
 @include "io.awk"
+@include "string.awk"
+@include "array.awk"
+@include "metainfo.awk"
 
 BEGIN {
     initFiles()
@@ -11,13 +13,14 @@ BEGIN {
 ### Init functions
 ###
 
-function initFiles(){
-    Files["input"]    = parameterize(ARGV[1])
-    Files["filename"] = getFilename(Files["input"])
-    Files["base"]     = getCurrentPath()
-    Files["source"]   = "/opt/optime"
+function initFiles() {
 
-    Files["output"]["dir"]     = Files["base"] "/" ".optime." Files["filename"] "/"
+    Files["input"]             = getAbsolutePath(ARGV[1])
+    Files["filename"]          = getFilename(Files["input"])
+    Files["base"]              = getFileDir(ARGV[1])
+    Files["source"]            = "/opt/" Command
+
+    Files["output"]["dir"]     = Files["base"] "/." Command "." Files["filename"] "/"
     Files["output"]["colors"]  = Files["output"]["dir"] "preamble_colors.tex"
     Files["output"]["def"]     = Files["output"]["dir"] "preamble_def.tex"
     Files["output"]["content"] = Files["output"]["dir"] "content.tex"
@@ -40,6 +43,5 @@ function copyTemplates(){
     copyTo(Files["source"] "/templates/preamble_header_foot.tex", Files["output"]["dir"])
     copyTo(Files["source"] "/templates/main.tex", Files["output"]["dir"])
 }
-
 
 

@@ -19,7 +19,7 @@ function initOptions(){
     #addOption("logo", "example-image-a")
 
     # log
-    addOption("debug", "debug")
+    addOption("debug", "info")
 
     # Colors 
     addOption("headbackground",  "Orange!60!white")

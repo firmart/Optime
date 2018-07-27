@@ -52,7 +52,7 @@ function join(array, delimiter, start, end,
         str = str array[i] delimiter
     }
 
-    return str array[i] 
+    return str array[end] 
 }
 
 # Initialise an 'untyped' type variable  as 'array' type

@@ -380,8 +380,9 @@ function imageBlock (blockHeader, contents) {
     for (i in contentsLine) {
         line = evalLine(contentsLine[i])
         if (line){
-                if (fileExists(line)){
-                    copyTo(line, Files["output"]["dir"] BlocksNB)
+                imgAbsPath = getAbsolutePathInFile(Files["input"], line)
+                if (fileExists(imgAbsPath)){
+                    copyTo(imgAbsPath, Files["output"]["dir"] BlocksNB)
                 } else {
                     warn("Image \"" line "\" doesn't exist")
                     return NULLSTR
