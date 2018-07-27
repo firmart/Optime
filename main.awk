@@ -31,6 +31,7 @@ FNR == 1 {
     for (i in Option) {
         defineOption(i)
     }
+    writeMainTex()
 
 }
 

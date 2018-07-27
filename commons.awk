@@ -56,3 +56,6 @@ function getGitHead(    line, group) {
         return NULLSTR
 }
 
+function evalBool(str) {
+    return tolower(str) == "true"
+}

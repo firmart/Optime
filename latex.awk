@@ -203,6 +203,10 @@ function fontStyle(code, text) {
     return buildLaTeXCmd(LaTeXCmd[code], text)
 }
 
+function input(filename) {
+    return buildLaTeXCmd("input", filename)
+}
+
 function buildLaTeXEnv(envName, contents, options, defaults,
                        ######################################
                        i, optStr, defaultStr) {

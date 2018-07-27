@@ -1,3 +1,4 @@
+@include "stack.awk"
 @include "string.awk"
 @include "array.awk"
 @include "log.awk"
@@ -15,7 +16,8 @@ function initOptions(){
     addOption("date",   "\\today")
     addOption("author", "author")
     #addOption("colorscheme", "other")
-    #addOption("columns", 3)
+    addOption("columns", 3)
+    addOption("headerfooter", "TRUE")
     #addOption("logo", "example-image-a")
 
     # log
