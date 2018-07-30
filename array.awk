@@ -82,25 +82,20 @@ function initEleAsArr(var, i) {
 ### Print function
 ###
 
-#function printArr(arr, num, sep) {
-#
-#    if (isNotDefined(sep)){
-#        sep = " : "
-#    }
-#
-#    if (isNotDefined(num)){
-#        num = 0
-#    }
-#
-#    _printArr(arr, sep, num)
-#}
+function printArr(arr, num, sep,     i) {
 
-function printArr(arr, num, sep,  i){
+    if (isNotDefined(sep)) {
+        sep = " : "
+    }
+
+    if (isNotDefined(num)) {
+        num = 0
+    }
 
     for (i in arr) {
         if (isarray(arr[i])) {
             printf "%*s%s%s\n", num, " ", i, sep
-            _printArr(arr[i], num, sep)
+            printArr(arr[i], num + 4, sep)
         } else {
             printf "%*s%s : %s\n", num, " ", i, arr[i]
         }

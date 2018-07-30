@@ -26,14 +26,8 @@ function initConst() {
 ### Utils functions
 ###
 
-# Return the pattern subscript if the string matches exactly this pattern
-# Otherwise, return a null string.
-function matchesAny(string, patterns,
-                    ####
-                    i) {
-    for (i in patterns)
-        if (string ~ "^" patterns[i] "$") return i
-    return NULLSTR
+function isNum(string) {
+    return typeof(string) == "number"
 }
 
 # Used to test if parameter is given

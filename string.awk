@@ -7,6 +7,16 @@ function replaceSubStringBy(string, start, end, replace,
     return sstr1 replace sstr2
 }
 
+# Return one of the patterns if the string matches this pattern at the beginning;
+# Otherwise, return a null string.
+function matchesAny(string, patterns,
+                    ####
+                    i) {
+    for (i in patterns)
+        if (string ~ "^" patterns[i]) return patterns[i]
+    return NULLSTR
+}
+
 
 # Split a string into characters.
 function explode(string, array){
