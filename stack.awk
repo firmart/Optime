@@ -34,6 +34,11 @@ function pop(stack,    topEle){
     return topEle
 }
 
+function popTillKeyEqual(stack, key) {
+    while (!isEmpty(stack) && getTopKey(stack) != key) {
+        pop(stack)
+    }
+}
 
 function push(stack, ele, key){
     stack[length(stack)][key] = ele

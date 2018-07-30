@@ -25,6 +25,7 @@ FNR == 1 {
 
     cleanContentsOf(Files["output"]["def"])
     cleanContentsOf(Files["output"]["colors"])
+    CurrentScope = "global"
     for (i = 1; i <= NF; ++i) {
         parseGlobalOptions($i);
     }

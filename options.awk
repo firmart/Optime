@@ -116,7 +116,8 @@ function scope2priority(section) {
     scope["subsection"   ] = 3
     scope["section"      ] = 4
     scope["part"         ] = 5
-    scope["default"      ] = 6
+    scope["global"       ] = 6
+    scope["default"      ] = 7
 
     return scope[section]
 }
@@ -128,7 +129,8 @@ function priority2scope(priority) {
     scope[3] = "subsection"   
     scope[4] = "section"      
     scope[5] = "part"         
-    scope[6] = "default"       
+    scope[6] = "global"       
+    scope[7] = "default"       
 
     return scope[priority]
 }

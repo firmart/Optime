@@ -3,6 +3,12 @@
 @include "string.awk"
 @include "commons.awk"
 
+BEGIN {
+    str = "cc:Function"
+    split(str, arr, "\n")
+    print join(arr, "\n", 2)
+}
+
 # Return true if the array contains anything; otherwise return false.
 function anything(array,
                   ####
@@ -52,7 +58,7 @@ function join(array, delimiter, start, end,
         str = str array[i] delimiter
     }
 
-    return str array[end] 
+    return str array[i] 
 }
 
 # Initialise an 'untyped' type variable  as 'array' type
@@ -66,9 +72,9 @@ function initAsArr(var) {
 # Initialise 'unassigned' type to 'array' type
 # var should be 'untyped' ......
 function initEleAsArr(var, i) {
-    if(!isarray(var[i][0])){
-        var[i][0] = NULLSTR
-        delete var[i][0]
+    if(typeof(var[i][SUBSEP]) != "array"){
+        var[i][SUBSEP] = SUBSEP
+        delete var[i][SUBSEP]
     }
 }
 
@@ -76,20 +82,64 @@ function initEleAsArr(var, i) {
 ### Print function
 ###
 
-function printArr(arr, sep){
+#function printArr(arr, num, sep) {
+#
+#    if (isNotDefined(sep)){
+#        sep = " : "
+#    }
+#
+#    if (isNotDefined(num)){
+#        num = 0
+#    }
+#
+#    _printArr(arr, sep, num)
+#}
 
-    if (!length(sep)){
-        sep = "-"
-    }
+function printArr(arr, num, sep,  i){
 
     for (i in arr) {
-        if (typeof(arr[i]) == "array"){
-            printf i sep
-            printArr(arr[i])
+        if (isarray(arr[i])) {
+            printf "%*s%s%s\n", num, " ", i, sep
+            _printArr(arr[i], num, sep)
         } else {
-            printf i sep arr[i]"\n"
+            printf "%*s%s : %s\n", num, " ", i, arr[i]
         }
     }
+}
+
+###
+### Conversion function
+###
+
+
+# Convert a pseudo-multidimensional array to a multidimensional array
+#    pArr : pseudo-multidimensional array
+#    mArr : multidimensional array
+# TODO : pseudo-multidimensional array mustn't have keys like that
+#           pArr["a", "b"] = "v1"
+#           pArr["a", "b", "c"] = "v2"
+function pseudoArrToMArr(pArr, mArr,    i, indices, ind) {
+    asorti(pArr, ind)
+
+    for (i in ind) {
+        split(ind[i], indices, SUBSEP)
+        assignValue(mArr, indices, pArr[ind[i]])
+    }
+}
+
+function _assignValue(barr, indice, i, val) {
+
+    if (i >= length(indice)) {
+        barr[indice[i]] = val
+        return 
+    } else {
+        initEleAsArr(barr, indice[i])
+        _assignValue(barr[indice[i]], indice, i+1, val)
+    }
+
+}
+function assignValue(carr, ind, val) {
+    _assignValue(carr, ind, 1, val) 
 }
 
 ###

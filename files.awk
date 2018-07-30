@@ -45,6 +45,7 @@ function copyTemplates(){
     copyTo(Files["source"] "/templates/preamble_header_foot.tex", Files["output"]["dir"])
 }
 
+#TODO build nested latexEnv
 function writeMainTex(    content) {
 
     content = NULLSTR

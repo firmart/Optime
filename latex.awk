@@ -280,11 +280,9 @@ function compile(program,    i){
     }
 
     chdir(Files["output"]["dir"])
-    for (i = 1; i<=3; i++) {
-        debug("Compile " i " time(s).")
-        if (system(program " -halt-on-error -shell-escape main.tex" SUPOUT   )) {
-            return FALSE
-        }
+    debug("Compile " i " time(s).")
+    if (system(program " -halt-on-error -shell-escape main.tex" SUPOUT   )) {
+        return FALSE
     }
     chdir(Files["base"])
     return TRUE
@@ -297,6 +295,7 @@ function linearLaTeXDebug() {
 
     if(!compile()){
         error("Unknown LaTeX error, please report.")
+        #TODO shouldn't exit here
         exit -1
     }
     
@@ -313,7 +312,15 @@ function linearLaTeXDebug() {
     }
 }
 
+d = {type : command, option : [a, b, c], default : [a, b]}
+evalDict(d, arr)
+arr["type"] = "command"
+arr["option"] = "[a, b, c]"
+arr["default"] = "[a, b]"
 function isDefinedLaTeXCmd(cmdName){
     return belongsTo(cmdName, LaTeXDefinedCmd)
 }
 
+function buildNestedLaTeXEnv(LaTeXArr) {
+    
+}
