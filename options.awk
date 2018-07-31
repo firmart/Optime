@@ -18,6 +18,7 @@ function initOptions(){
     #addOption("colorscheme", "other")
     addOption("columns", 3)
     addOption("headerfooter", "TRUE")
+    addOption("landscape", "FALSE")
     #addOption("logo", "example-image-a")
 
     # log

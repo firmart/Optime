@@ -102,7 +102,6 @@ function escapeLaTeX(target,
     for (i = 1; i <= len; i++) {
 
         # get current symbol
-        #print "#"join(charArr, NULLSTR, i, i+1)"#" belongsTo(join(charArr, NULLSTR, i, i+1), LaTeXMathSep)
         twoLenStr = join(charArr, NULLSTR, i, i+1)
         
         if(twoLenStr == "\\*" || twoLenStr == "\\_"){
@@ -457,7 +456,7 @@ function tokenize(returnTokens, string,
                 }
 
                 # Reserve token
-                match(r, "^" tempPattern, tempGroup)
+                match(r, "^" reservedPatterns[tempPattern], tempGroup)
                 returnTokens[p++] = tempGroup[0]
 
                 i += length(tempGroup[0])

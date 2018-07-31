@@ -3,12 +3,6 @@
 @include "string.awk"
 @include "commons.awk"
 
-BEGIN {
-    str = "cc:Function"
-    split(str, arr, "\n")
-    print join(arr, "\n", 2)
-}
-
 # Return true if the array contains anything; otherwise return false.
 function anything(array,
                   ####

@@ -13,7 +13,17 @@ function matchesAny(string, patterns,
                     ####
                     i) {
     for (i in patterns)
-        if (string ~ "^" patterns[i]) return patterns[i]
+        if (string ~ "^" patterns[i]) return i
+    return NULLSTR
+}
+
+# Return one of the substrings' index if the string starts with it;
+# Otherwise, return a null string.
+function startsWithAny(string, substrings,
+                       ####
+                       i) {
+    for (i in substrings)
+        if (index(string, substrings[i]) == 1) return substrings[i]
     return NULLSTR
 }
 

@@ -5,6 +5,7 @@
 @include "commons.awk"
 @include "array.awk"
 @include "colors.awk"
+@include "options.awk"
 
 BEGIN {
     initLaTeXCmd()
@@ -207,9 +208,7 @@ function input(filename) {
     return buildLaTeXCmd("input", filename)
 }
 
-function buildLaTeXEnv(envName, contents, options, defaults,
-                       ######################################
-                       i, optStr, defaultStr) {
+function buildLaTeXEnvBeginTag(envName, options, defaults,     i, optStr, defaultStr) {
 
     if (isNotDefined(options)) {
         optStr = ""
@@ -230,20 +229,28 @@ function buildLaTeXEnv(envName, contents, options, defaults,
             defaultStr = defaultStr "[" defaults[i] "]"
         }
     }
-
-    envStr = "\\begin{" envName "}" defaultStr optStr "\n" contents "\\end{" envName "}" "\n"
-    return envStr
+   return "\\begin{" envName "}" defaultStr optStr "\n"
 }
 
-function buildLaTeXCmd(cmdName,
-                       contents,
-                       options,
-                       defaults,
+function buildLaTeXEnvEndTag(envName) {
+    return "\\end{" envName "}" "\n"
+}
+
+function buildLaTeXEnv(envName, contents, options, defaults,
+                       ######################################
+                       beginTag, endTag) {
+
+    beginTag = buildLaTeXEnvBeginTag(envName, options, defaults)
+    endTag = buildLaTeXEnvEndTag(envName)
+    return beginTag contents endTag
+}
+
+function buildLaTeXCmd(cmdName, contents, options, defaults,
                        #########
                        i, optStr) {
 
     if (isNotDefined(contents)) {
-        return "\\" cmdName
+        return "\\" cmdName 
     }
 
     if (isNotDefined(options)) {
@@ -266,8 +273,7 @@ function buildLaTeXCmd(cmdName,
         }
     }
 
-    cmdStr = "\\" cmdName defaultStr optStr "{" contents "}" 
-    return cmdStr
+    return  "\\" cmdName defaultStr optStr "{" contents "}"  
 }
 
 
@@ -303,24 +309,50 @@ function linearLaTeXDebug() {
         
         writeTo(buildLaTeXCmd("input", ParsedBlocks[i]["filename"]),  Files["output"]["content"])
 
-        if(!compile()){
+        if(!compile()) {
             error("Block " i  " contains syntax error :")
             error("Block type : " BlocksName[ParsedBlocks[i]["type"]] )
             error("Block title : " ParsedBlocks[i]["title"] )
-            break;
+            break
         }
     }
 }
 
-d = {type : command, option : [a, b, c], default : [a, b]}
-evalDict(d, arr)
-arr["type"] = "command"
-arr["option"] = "[a, b, c]"
-arr["default"] = "[a, b]"
 function isDefinedLaTeXCmd(cmdName){
     return belongsTo(cmdName, LaTeXDefinedCmd)
 }
 
-function buildNestedLaTeXEnv(LaTeXArr) {
-    
+function buildNestedLaTeXEnv(latexArr,   i, tokens, ast,  mAst, stack, type, name, NLStr, endContent) {
+
+    initStack(stack)
+    for (i in latexArr) {
+
+        delete tokens
+        tokenize(tokens, latexArr[i]) 
+
+        delete ast
+        parseJson(ast, tokens) 
+
+        delete mAst
+        pseudoArrToMArr(ast, mAst)
+
+        type = mAst[0]["type"]
+        name = mAst[0]["name"]
+        if (type == "environment") {
+            NLStr = NLStr buildLaTeXEnvBeginTag(name, mAst[0]["options"], mAst[0]["defaults"])
+            NLStr = NLStr mAst[0]["beginContent"] 
+            push(stack, mAst[0]["endContent"], name)
+        } else if (type == "command") {
+            NLStr = NLStr buildLaTeXCmd(name, mAst[0]["content"], mAst[0]["options"], mAst[0]["defaults"]) "\n"
+        }
+    }
+
+    while(!isEmpty(stack)) {
+        name = getTopKey(stack)
+        endContent = getTopValue(stack)
+        pop(stack)
+        NLStr = NLStr endContent buildLaTeXEnvEndTag(name)
+    }
+
+    return NLStr
 }

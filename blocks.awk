@@ -485,9 +485,7 @@ function writeBlock(str,     blockStr, file) {
     if (blockStr){
         blockStr = "\\input{" Files["filename"] ".colors." BlocksNB ".tex" "}\n" blockStr 
         writeTo(blockStr, file)
-        #printOptions()
         writeColors()
-        #defineLocalOptions(file)
     }
 }
 

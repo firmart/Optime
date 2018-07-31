@@ -46,24 +46,33 @@ function copyTemplates(){
 }
 
 #TODO build nested latexEnv
-function writeMainTex(    content) {
+function writeMainTex(    array) {
 
-    content = NULLSTR
-    content = content input("preamble_packages.tex")  "\n"
-    content = content input("preamble_commands.tex") "\n"
-    content = content input("preamble_colors.tex") "\n"
-    content = content input("preamble_def.tex") "\n"
-    #content = content input("preamble_author.tex") "\n"
-    content = content (evalBool(getOption("headerfooter")) ? input("preamble_header_foot.tex") : NULLSTR) "\n"
-    content = content buildLaTeXEnv("document", \
-                  buildLaTeXCmd("color", "textcolor") "\n" \
-                  buildLaTeXCmd("raggedright") "\n" \
-                  buildLaTeXCmd("raggedcolumns") "\n" \
-                  buildLaTeXCmd("footnotesize") "\n" \
-                  (getOption("columns") <= 1 ? input("content.tex") "\n" :  \
-                      buildLaTeXEnv("multicols*", input("content.tex") "\n", getOption("columns"))) \
-             )
-    writeTo(content, Files["output"]["dir"] "/main.tex")
+    initAsArr(array)
+    appendToArray("{type : command, name : input, content : preamble_packages.tex}", array)
+    appendToArray("{type : command, name : input, content : preamble_commands.tex}", array)
+    appendToArray("{type : command, name : input, content : preamble_colors.tex}", array)
+    appendToArray("{type : command, name : input, content : preamble_def.tex}", array) 
+    #appendToArray("{type : command, name : input, content : preamble_author.tex}", array) 
+    if(evalBool(getOption("headerfooter"))) 
+        appendToArray("{type : command, name : input, content : preamble_header_foot.tex}", array)
+
+    appendToArray("{type : environment, name : document}", array) 
+    appendToArray("{type : command, name : color, content : textcolor}", array) 
+    appendToArray("{type : command, name : raggedright}", array) 
+    appendToArray("{type : command, name : raggedcolumns}", array) 
+    appendToArray("{type : command, name : footnotesize}", array) 
+
+    if (evalBool(getOption("landscape"))) {
+        appendToArray("{type : environment, name : landscape }" , array) 
+    }
+
+    if (getOption("columns") > 1) {
+        appendToArray("{type : environment, name : multicols*, options : " getOption("columns") "}" , array) 
+    }
+    appendToArray("{type : command, name : input, content : content.tex}", array) 
+
+    writeTo(buildNestedLaTeXEnv(array), Files["output"]["dir"] "/main.tex")
 }
 
 
