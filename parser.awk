@@ -475,3 +475,4 @@ function tokenize(returnTokens, string,
         returnTokens[p++] = currentToken
 
 }
+

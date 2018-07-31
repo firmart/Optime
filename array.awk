@@ -3,19 +3,16 @@
 @include "string.awk"
 @include "commons.awk"
 
-# Return true if the array contains anything; otherwise return false.
-function anything(array,
-                  ####
-                  i) {
-    for (i in array)
-        if (array[i]) return TRUE
-    return FALSE
+
+function isEmpty(array){
+    return length(array) == 0
 }
 
 # Only work with number subscripted array
 # Make sure that parameter array is initialized as an array (initAsArr)
 function appendToArray(element, array) {
-    array[anything(array) ? length(array) + 1 : 1] = element
+    if (typeof(array) != "array") initAsArr(array)
+    array[isEmpty(array) ? 1 : length(array) + 1] = element
 }
 
 # Return element's subscript if it belongs to the array;
@@ -154,3 +151,4 @@ function clone2 (arr, lindex, rindex) {
     initEleAsArr(arr, lindex)
     clone(arr[lindex], arr[rindex])
 }
+

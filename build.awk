@@ -138,3 +138,4 @@ function squeeze(line, preserveIndent) {
 
     return line
 }
+
