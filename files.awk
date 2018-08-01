@@ -54,6 +54,8 @@ function writeMainTex(    array) {
     appendToArray("{type : command, name : input, content : preamble_colors.tex}", array)
     appendToArray("{type : command, name : input, content : preamble_def.tex}", array) 
     #appendToArray("{type : command, name : input, content : preamble_author.tex}", array) 
+
+    #TODO header and footer in landscape mode
     if(evalBool(getOption("headerfooter"))) 
         appendToArray("{type : command, name : input, content : preamble_header_foot.tex}", array)
 

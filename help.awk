@@ -1,0 +1,66 @@
+#! /usr/bin/gawk -f
+
+@include "commons.awk"
+@include "io.awk"
+@include "log.awk"
+@include "metainfo.awk"
+@include "maths.awk"
+
+BEGIN {
+    print getVersion()
+}
+
+# Return version as a string.
+function getVersion(    build, gitHead) {
+    Platform = Platform ? Platform : detectProgram("uname", "-s", 1)
+    if (ENVIRON["OPTIME_BUILD"])
+        build = "-" ENVIRON["OPTIME_BUILD"]
+    else {
+        gitHead = getGitHead()
+        build = gitHead ? "-git:" gitHead : ""
+    }
+
+    return ansi("bold", sprintf("%-22s%s%s\n\n", Name, Version, build))        \
+        sprintf("%-22s%s\n", "platform", Platform)                             \
+        sprintf("%-22s%s\n", "gawk (GNU Awk)", cmpVersion(PROCINFO["version"], "4.2.1") >= 0 ? ansi("green", PROCINFO["version"]) : (ansi("red", PROCINFO["version"] " (version >= 4.2.1 is required)" )))  \
+        sprintf("%-22s%s\n", "XeLaTeX", detectProgram("xelatex", "--version") ? ansi("green", "[OK]") : ansi("red", "[NONE]")) \
+        sprintf("%-22s%s\n", "terminal type", ENVIRON["TERM"])                 \
+        sprintf("%-22s%s\n", "init file", InitScript ? InitScript : "[NONE]")  \
+        sprintf("\n%-22s%s", "Report bugs to:", "https://github.com/firmart/Optime/issues")
+        #TODO languages + fonts for others languages
+        #sprintf("%-22s%s\n", "home language", getOption("hl"))                                        \
+        #sprintf("%-22s%s\n", "theme", getOption("theme"))                                             \
+}
+
+# Detect whether a program exists in path.
+# Return the name (or output) if the program call writes anything to stdout;
+# Otherwise, return a null string.
+function detectProgram(prog, arg, returnOutput,    temp) {
+    if (returnOutput) {
+        prog " " arg SUPERR | getline temp
+        return temp
+    } else
+        return (prog " " arg SUPERR | getline) ? prog : NULLSTR
+}
+
+# Return  1 if the first version is newer than the second; 
+#        -1 is the opposite case
+#         0 otherwise
+function cmpVersion(ver1, ver2,    i, group1, group2, len) {
+    split(ver1, group1, ".")
+    split(ver2, group2, ".")
+    len = min(length(group1), length(group2))
+    for (i = 1; i <= len; i++) {
+        if (group1[i] + 0 > group2[i] + 0)
+            return 1
+        else if (group1[i] + 0 < group2[i] + 0)
+            return -1
+    }
+
+    if (length(group1) > length(group2))
+        return 1
+    else if (length(group1) < length(group2))
+        return -1
+    else 
+        return 0
+}
