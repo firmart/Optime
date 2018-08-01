@@ -85,16 +85,28 @@ function getOutput(command,    content, line) {
     return content
 }
 
+
+# Return 1 if program `prg` exists in path; 0 otherwise
+# `command` is standarized by POSIX (use it instead of `where`)
+function isExistProgram(prg) {
+    return !system("command -v " prg SUPOUT)
+}
+
 # Remove directory
-function removeDir(dir) {
-    system("rm -rf " dir)
+function removeDir(dirPath) {
+    system("rm -rf " dirPath)
+}
+
+# Create temporary directory
+function createTempDir() {
+    return getOutput("mktemp -d")
 }
 
 ###
 ### Path related functions
 ###
 
-# Get filename of a file
+# Get filename of a file (i.e. without extension)
 function getFilename(path,    pathArr, group) {
     split(path, pathArr, "/")
     split(pathArr[length(pathArr)], group, ".")

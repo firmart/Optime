@@ -10,7 +10,6 @@ BEGIN {
 
 function initOptions(){
 
-
     # Global options
     addOption("title",  "title")
     addOption("date",   "\\today")

@@ -5,6 +5,7 @@
 @include "log.awk"
 @include "metainfo.awk"
 @include "maths.awk"
+@include "pygments.awk"
 
 BEGIN {
     print getVersion()
@@ -12,7 +13,7 @@ BEGIN {
 
 # Return version as a string.
 function getVersion(    build, gitHead) {
-    Platform = Platform ? Platform : detectProgram("uname", "-s", 1)
+    Platform = Platform ? Platform : getOutput("uname -s")
     if (ENVIRON["OPTIME_BUILD"])
         build = "-" ENVIRON["OPTIME_BUILD"]
     else {
@@ -22,25 +23,15 @@ function getVersion(    build, gitHead) {
 
     return ansi("bold", sprintf("%-22s%s%s\n\n", Name, Version, build))        \
         sprintf("%-22s%s\n", "platform", Platform)                             \
-        sprintf("%-22s%s\n", "gawk (GNU Awk)", cmpVersion(PROCINFO["version"], "4.2.1") >= 0 ? ansi("green", PROCINFO["version"]) : (ansi("red", PROCINFO["version"] " (version >= 4.2.1 is required)" )))  \
-        sprintf("%-22s%s\n", "XeLaTeX", detectProgram("xelatex", "--version") ? ansi("green", "[OK]") : ansi("red", "[NONE]")) \
+        sprintf("%-22s%s\n", "gawk (GNU Awk)", cmpVersion(PROCINFO["version"], "4.2") >= 0 ? ansi("green", PROCINFO["version"]) : (ansi("red", PROCINFO["version"] " (version >= 4.2 is required)" )))  \
+        sprintf("%-22s%s\n", "XeLaTeX", isExistProgram("xelatex") ? ansi("green", "[OK]") : ansi("red", "[NONE]")) \
+        sprintf("%-22s%s\n", "pygmentize", Pygments ? Pygments : ansi("yellow", "[NONE]") " (recommended for code highlighting)")  \
         sprintf("%-22s%s\n", "terminal type", ENVIRON["TERM"])                 \
         sprintf("%-22s%s\n", "init file", InitScript ? InitScript : "[NONE]")  \
         sprintf("\n%-22s%s", "Report bugs to:", "https://github.com/firmart/Optime/issues")
         #TODO languages + fonts for others languages
         #sprintf("%-22s%s\n", "home language", getOption("hl"))                                        \
         #sprintf("%-22s%s\n", "theme", getOption("theme"))                                             \
-}
-
-# Detect whether a program exists in path.
-# Return the name (or output) if the program call writes anything to stdout;
-# Otherwise, return a null string.
-function detectProgram(prog, arg, returnOutput,    temp) {
-    if (returnOutput) {
-        prog " " arg SUPERR | getline temp
-        return temp
-    } else
-        return (prog " " arg SUPERR | getline) ? prog : NULLSTR
 }
 
 # Return  1 if the first version is newer than the second; 

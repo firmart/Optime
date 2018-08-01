@@ -184,7 +184,15 @@ function codeBlock (blockHeader,
 
     opt[1] = blockPL
     opt[2] = blockTitle
-    return buildLaTeXEnv(BlocksName[blockType], contents, opt)
+
+    # If Pygments not installed, return nothing
+    if (!Pygments) {
+        error("Pygments is not installed. Install it with " ansi("blue", "pip install pygments"))
+        return NULLSTR
+    } else {
+        return buildLaTeXEnv(BlocksName[blockType], contents, opt)
+    }
+    
 }
 
 # Pie chart block
@@ -447,7 +455,7 @@ function getProgLang(blockHeader,
     split(blockHeader, blockFields, ":")    
 
     if (length(blockFields) == 2) return "text"
-    else if (!belongsTo(blockFields[2], PygmentsLexers)) {
+    else if (Pygments && !belongsTo(blockFields[2], PygmentsLexers)) {
         warn("Lexer \"" blockFields[2] "\" doesn't exist.")
         return "text"
     } else {

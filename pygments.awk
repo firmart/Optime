@@ -1,17 +1,25 @@
 
 @include "commons.awk"
+@include "io.awk"
 
 # TODO error if pygments isn't installed
 # pip3 install pygments
 
 BEGIN {
-    getAvailableStyle(PygmentsStyles)
-    getAvailableLexers(PygmentsLexers)
+    initPygments()
+    if (Pygments) {
+        getAvailableStyle(PygmentsStyles)
+        getAvailableLexers(PygmentsLexers)
+    }
+}
+
+function initPygments() {
+    Pygments = isExistProgram("pygmentize") ? getOutput("pygmentize -V") : NULLSTR
 }
 
 function getAvailableStyle(styleArr,
                            #########
-                           lexers, lexersArr, j, line, str, tmpArr){
+                           lexers, lexersArr, j, line, str, tmpArr, i){
     # TODO translate this and add corresponding warning message
     # add a cmd option to show available PL
     lexers = getOutput("pygmentize -L styles") 

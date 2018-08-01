@@ -16,8 +16,10 @@ BEGIN {
     FS = "\n"
     RS = ""
 
+    # TODO put these lines into a setup function
     copyTemplates()
     cleanContentsOf(Files["output"]["content"])
+    writePreamblePackages()
 }
 
 

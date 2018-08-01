@@ -1,4 +1,6 @@
 
+@include "options.awk"
+
 BEGIN {
     initAnsiCode()
     initLogLevelPriority()
