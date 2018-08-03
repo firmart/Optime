@@ -6,13 +6,6 @@
 # - Platform: string -> Platform name
 #
 
-BEGIN {
-    initSageMath()
-}
-
-function initSageMath() {
-    SageMath = isExistProgram("sage") ? getOutput("sage -v") : NULLSTR
-}
 
 # Return version as a string.
 function getVersion(    build, gitHead) {
@@ -62,4 +55,8 @@ function cmpVersion(ver1, ver2,    i, group1, group2, len) {
 
 function upgrade () {
     #TODO implement upgrade()
+}
+
+function getHelp() {
+    #TODO implement getHelp()
 }

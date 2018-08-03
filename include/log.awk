@@ -5,11 +5,6 @@
 # - LogLevelPriority: array -> quantify log level
 #
 
-BEGIN {
-    initAnsiCode()
-    initLogLevelPriority()
-}
-
 ## Display & Debugging:
 
 # Initialize ANSI escape codes for SGR (Select Graphic Rendition).

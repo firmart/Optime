@@ -10,14 +10,6 @@
 # - LaTeXDefinedCmd: array -> user defined command
 #
 
-BEGIN {
-    initLaTeXCmd()
-    initLaTeXConstant()
-    initLaTeXColorModel()
-    initLaTeXDefinedCmd()
-    initLaTeXMathSep()
-}
-
 ###
 ### Init functions
 ###

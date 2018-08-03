@@ -6,14 +6,6 @@
 # - PygmentsStyles: array -> list of pygmentize code-highlighting styles
 #
 
-BEGIN {
-    initPygments()
-    if (Pygments) {
-        getAvailableStyle(PygmentsStyles)
-        getAvailableLexers(PygmentsLexers)
-    }
-}
-
 function initPygments() {
     Pygments = isExistProgram("pygmentize") ? getOutput("pygmentize -V") : NULLSTR
 }

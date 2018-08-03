@@ -7,11 +7,6 @@
 # - CmdRegex: array -> Optime command regex
 
 
-BEGIN {
-    initCmd()
-}
-
-
 ###
 ### Init functions
 ###

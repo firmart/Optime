@@ -6,10 +6,6 @@
 #   SUPOUT, SUPERR, PIPE: string -> I/O constants
 #
 
-BEGIN {
-    initIOConst()
-}
-
 ###
 ### Init functions
 ###

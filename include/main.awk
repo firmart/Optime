@@ -10,6 +10,63 @@
 #
 
 
+
+# TODO delete array to prevent exists values
+function initMain() {
+
+    BlocksNB = 0
+    #CurrentScope = "default"
+
+    # Dependencies
+    initSageMath()
+    initPygments()
+
+    if (Pygments) {
+        getAvailableStyle(PygmentsStyles)
+        getAvailableLexers(PygmentsLexers)
+    }
+
+    # Boolean, String and I/O constants
+    initConst()
+    initStrConst()
+    initIOConst()
+
+
+    #log.awk
+    initAnsiCode()
+    initLogLevelPriority()
+
+    # blocks.awk
+    initSectionsName()
+    initBlocksName()
+    initBlocksColumns()
+    initBlocksIcon()
+
+    # cmd.awk
+    initCmd()
+
+    # colors.awk
+    initAvailableColors()
+    TotalDefaultColors = length(AvailableColors)
+
+    # latex.awk
+    initLaTeXCmd()
+    initLaTeXConstant()
+    initLaTeXColorModel()
+    initLaTeXDefinedCmd()
+    initLaTeXMathSep()
+
+    # options.awk
+    initOptions()
+
+    # main.awk
+    initAuxFiles()
+}
+
+function initSageMath() {
+    SageMath = isExistProgram("sage") ? getOutput("sage -v") : NULLSTR
+}
+
 function initAuxFiles() {
 
     AuxFiles["dir"]     = getFileDir(getOption("input")) "/." Command "." FileName "/"
@@ -114,16 +171,18 @@ BEGIN {
     FileName = getFilename(getOption("input"))
 
     # TODO put these lines into a setup function
-    initAuxFiles()
+    initMain()
     copyTemplates()
     cleanContentsOf(AuxFiles["content"])
     writePreamblePackages()
 
+    #TODO should be call in the end
     optimeMain()
 
 }
 
 
+# TODO should call readFrom
 FNR == 1 {
 
     #TODO define before cli option parsing

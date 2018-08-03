@@ -10,16 +10,6 @@
 # - BlocksIcon: array -> contains icon code for each block (which use icon)
 #
 
-BEGIN {
-    BlocksNB = 0
-    CurrentScope = "default"
-
-    initSectionsName()
-    initBlocksName()
-    initBlocksColumns()
-    initBlocksIcon()
-}
-
 ###
 ###  Init functions                               
 ###

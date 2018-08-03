@@ -4,10 +4,9 @@
 # - NULLSTR: string -> null string
 #
 
-BEGIN {
+function initStrConst() {
     NULLSTR = ""
 }
-
 
 function replaceSubStringBy(string, start, end, replace, 
                             ############################

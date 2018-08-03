@@ -6,10 +6,6 @@
 # - TotalDefaultColors: number -> number of default colors
 #
 
-BEGIN {
-    initAvailableColors()
-    TotalDefaultColors = length(AvailableColors)
-}
 
 ###
 ### Init functions

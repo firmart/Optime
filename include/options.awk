@@ -4,12 +4,6 @@
 # - Option: array of stack -> array contains options (each option is implement as stack)
 #
 
-
-
-BEGIN {
-    initOptions()
-}
-
 function initOptions(){
 
     # Global options

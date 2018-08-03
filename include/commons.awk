@@ -5,10 +5,6 @@
 # - TRUE, FALSE: number -> boolean constant
 #
 
-BEGIN {
-    initConst()
-}
-
 ###
 ### Init functions
 ###
