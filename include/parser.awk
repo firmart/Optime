@@ -1,10 +1,5 @@
 #! /usr/bin/gawk -f
 
-@include "commons.awk"
-@include "array.awk"
-@include "string.awk"
-@include "stack.awk"
-@include "latex.awk"
 
 function findFirstNonEscapedChar(string, char,
                                  ############

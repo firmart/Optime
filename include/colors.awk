@@ -1,7 +1,10 @@
 #! /usr/bin/gawk -f 
 
-@include "commons.awk"
-@include "array.awk"
+#
+# Global variables:
+# - AvailableColors: array -> available default colors
+# - TotalDefaultColors: number -> number of default colors
+#
 
 BEGIN {
     initAvailableColors()
@@ -105,6 +108,10 @@ function initAvailableColors() {
     AvailableColors[86] = "Yellow"
     AvailableColors[87] = "YellowOrange"
 }
+
+###
+### Color boolean functions
+###
 
 # Given a color name, check if it exist or not
 function isAvailableColor(colorName){

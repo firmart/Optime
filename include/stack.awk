@@ -1,7 +1,5 @@
 #! /usr/bin/gawk -f
 
-@include "commons.awk"
-@include "array.awk"
 
 #TODO: rename to ordered hash map ?
 #TODO: add error managment

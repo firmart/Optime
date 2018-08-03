@@ -4,17 +4,16 @@
 # Adapted from github.com/soimort/translate-shell/develop/build.awk
 #
 
-@include "string.awk"
-@include "array.awk"
-@include "io.awk"
+@include "include/string.awk"
+@include "include/array.awk"
+@include "include/io.awk"
+@include "include/commons.awk"
+@include "metainfo.awk"
 
 function initBuild(){
-    BuildPath        = "build/"
-    Command          = "optime"
-    BuildCommandPath = BuildPath Command
-    Main             = BuildCommandPath ".awk"
-    EntryPoint       = "main.awk"
-    EntryScript      = "main"
+    BuildPath = "build/"
+    Optime    = BuildPath Command
+    OptimeAwk = Optime ".awk"
 }
 
 BEGIN {
@@ -31,8 +30,9 @@ function readSqueezed(fileName, squeezed,    group, line, ret) {
         while (getline line < fileName) {
             match(line, /^[[:space:]]*@include[[:space:]]*"(.*)"$/, group)
             if (RSTART) { # @include
-                if (group[1] ~ /\.awk$/)
+                if (group[1] ~ /\.awk$/) 
                     appendToArray(group[1], Includes)
+                
 
                 if (ret) ret = ret RS
                 ret = ret readSqueezed(group[1], squeezed)
@@ -52,47 +52,47 @@ function build(target, type,    i, group, inline, line, temp) {
 
     if (target == "bash" || target == "zsh") {
 
-        print "#!/usr/bin/env " target > BuildCommandPath
+        print "#!/usr/bin/env " target > Optime
 
         if (fileExists("DISCLAIMER")) {
-            print "#" > BuildCommandPath
+            print "#" > Optime
             while (getline line < "DISCLAIMER")
-                print "# " line > BuildCommandPath
-            print "#" > BuildCommandPath
+                print "# " line > Optime
+            print "#" > Optime
         }
 
-        print "export OPTIME_ENTRY=\"$0\"" > BuildCommandPath
-        print "if [[ ! $LANG =~ (UTF|utf)-?8$ ]]; then export LANG=en_US.UTF-8; fi" > BuildCommandPath
+        print "export OPTIME_ENTRY=\"$0\"" > Optime
+        print "if [[ ! $LANG =~ (UTF|utf)-?8$ ]]; then export LANG=en_US.UTF-8; fi" > Optime
 
-        print "read -r -d '' OPTIME_PROGRAM << 'EOF'" > BuildCommandPath
-        print readSqueezed(EntryPoint, TRUE) > BuildCommandPath
-        print "EOF" > BuildCommandPath
+        print "read -r -d '' OPTIME_PROGRAM << 'EOF'" > Optime
+        print readSqueezed(EntryPoint, TRUE) > Optime
+        print "EOF" > Optime
 
-        print "read -r -d '' OPTIME_MANPAGE << 'EOF'" > BuildCommandPath
+        print "read -r -d '' OPTIME_MANPAGE << 'EOF'" > Optime
         if (fileExists(Man))
             while (getline line < Man)
-                print line > BuildCommandPath
-        print "EOF" > BuildCommandPath
-        print "export OPTIME_MANPAGE" > BuildCommandPath
+                print line > Optime
+        print "EOF" > Optime
+        print "export OPTIME_MANPAGE" > Optime
 
         if (type == "release")
-            print "export OPTIME_BUILD=release" temp > BuildCommandPath
+            print "export OPTIME_BUILD=release" temp > Optime
         else {
             temp = getGitHead()
             if (temp)
-                print "export OPTIME_BUILD=git:" temp > BuildCommandPath
+                print "export OPTIME_BUILD=git:" temp > Optime
         }
 
-        #print "gawk -f <(echo -E \"$OPTIME_PROGRAM\") - \"$@\"" > BuildCommandPath
-        print "gawk -f <(echo -E \"$OPTIME_PROGRAM\")  \"$@\"" > BuildCommandPath
+        print "gawk -f <(echo -E \"$OPTIME_PROGRAM\") -  \"$@\"" > Optime
 
-        ("chmod +x " parameterize(BuildCommandPath)) | getline
+        ("chmod +x " parameterize(Optime)) | getline
 
         # Rebuild EntryScript
         print "#!/bin/sh" > EntryScript
         print "export OPTIME_DIR=`dirname $0`" > EntryScript
-        print "gawk \\" > EntryScript
-        for (i = 0; i < length(Includes) - 1; i++)
+        #print "gawk \\" > EntryScript
+        print "gawk --debug \\" > EntryScript
+        for (i = 1; i <= length(Includes) -1; i++)
             print "-i \"${OPTIME_DIR}/" Includes[i] "\" \\" > EntryScript
         print "-f \"${OPTIME_DIR}/" Includes[i] "\" -- \"$@\"" > EntryScript
         ("chmod +x " parameterize(EntryScript)) | getline
@@ -103,11 +103,11 @@ function build(target, type,    i, group, inline, line, temp) {
         "uname -s" | getline temp
         print (temp == "Darwin" ?
                "#!/usr/bin/env gawk -f" : # macOS
-               "#!/usr/bin/gawk -f") > Main
+               "#!/usr/bin/gawk -f") > OptimeAwk
 
-        print readSqueezed(EntryPoint, TRUE) > Main
+        print readSqueezed(EntryPoint, TRUE) > OptimeAwk
 
-        ("chmod +x " parameterize(Main)) | getline
+        ("chmod +x " parameterize(OptimeAwk)) | getline
         return 0
 
     } else {

@@ -1,8 +1,10 @@
-@include "stack.awk"
-@include "string.awk"
-@include "array.awk"
-@include "log.awk"
-@include "io.awk"
+
+#
+# Global variables:
+# - Option: array of stack -> array contains options (each option is implement as stack)
+#
+
+
 
 BEGIN {
     initOptions()
@@ -14,13 +16,18 @@ function initOptions(){
     addOption("title",  "title")
     addOption("date",   "\\today")
     addOption("author", "author")
+    #TODO a colorscheme file is a file containing color options definitions
+    #     these options have the same priority as the scope they are declared
     #addOption("colorscheme", "other")
     addOption("columns", 3)
     addOption("headerfooter", "TRUE")
     addOption("landscape", "FALSE")
     #addOption("logo", "example-image-a")
 
+    addOption("output", FileName ".pdf")
+
     # log
+    # TODO use number instead ?
     addOption("debug", "info")
 
     # Colors 
@@ -44,7 +51,7 @@ function defineOption(option, file){
         case "headbackground"  : case "footbackground"  : case "textcolor"       :
         case "darkbackground"  : case "lightbackground" : case "linkcolor"       :
         case "citecolor"       : case "urlcolor"        :
-                appendTo(definecolor(option, "xcolor", getOption(option)), file ? file : Files["output"]["colors"] )
+                appendTo(definecolor(option, "xcolor", getOption(option)), file ? file : AuxFiles["colors"] )
             break
         default:
             break
@@ -102,13 +109,8 @@ function updateOptions(    optionName) {
     }
 }
 
-function printOptions(    optionName) {
-    for(optionName in Option) {
-       print "----Option[" optionName "]----"
-       printStack(Option[optionName]) 
-    }
-}
-
+#TODO global -> file
+#TODO add config
 function scope2priority(section) {
 
     scope["block"        ] = 1

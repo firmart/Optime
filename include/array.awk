@@ -1,8 +1,5 @@
 #! /usr/bin/gawk -f
 
-@include "string.awk"
-@include "commons.awk"
-
 
 function isEmpty(array){
     return length(array) == 0
@@ -55,8 +52,8 @@ function join(array, delimiter, start, end,
 # Initialise an 'untyped' type variable  as 'array' type
 function initAsArr(var) {
     if(isarray(var)) return 
-    var[0] = NULLSTR
-    delete var[0]
+    var[SUBSEP] = NULLSTR
+    delete var[SUBSEP]
 }
 
 

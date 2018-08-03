@@ -1,4 +1,14 @@
 
+#
+# Global variables:
+# - NULLSTR: string -> null string
+#
+
+BEGIN {
+    NULLSTR = ""
+}
+
+
 function replaceSubStringBy(string, start, end, replace, 
                             ############################
                             sstr1, sstr2) {
@@ -70,7 +80,7 @@ function parameterize(string, quotationMark) {
 # Reverse of parameterize(string, quotationMark).
 function unparameterize(string,    temp) {
     match(string, /^'(.*)'$/, temp)
-    if (temp[0]) { # use temp[0] (there IS a match for quoted empty string)
+    if (temp[0]) { # use temp[0] (there is a match for quoted empty string)
         string = temp[1]
         gsub(/'\\''/, "'", string)
         return string

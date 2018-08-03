@@ -1,5 +1,9 @@
 
-@include "options.awk"
+#
+# Global variables:
+# - AnsiCode: array -> ANSI escape code
+# - LogLevelPriority: array -> quantify log level
+#
 
 BEGIN {
     initAnsiCode()

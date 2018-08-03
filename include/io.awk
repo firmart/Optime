@@ -1,8 +1,10 @@
 #! /usr/bin/gawk -f
 
-@include "commons.awk"
-@include "string.awk"
-@include "array.awk"
+#
+# Global variables:
+# - STDIN, STDOUT, STDERR,
+#   SUPOUT, SUPERR, PIPE: string -> I/O constants
+#
 
 BEGIN {
     initIOConst()
@@ -89,7 +91,7 @@ function getOutput(command,    content, line) {
 # Return 1 if program `prg` exists in path; 0 otherwise
 # `command` is standarized by POSIX (use it instead of `where`)
 function isExistProgram(prg) {
-    return !system("command -v " prg SUPOUT)
+    return  getOutput("command -v " prg)
 }
 
 # Remove directory

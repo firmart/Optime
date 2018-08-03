@@ -2,10 +2,13 @@
 
 @load "filefuncs"
 
-@include "commons.awk"
-@include "array.awk"
-@include "colors.awk"
-@include "options.awk"
+#
+# Global variables:
+# - LaTeXCmd: array -> some latex command
+# - LaTeXColorModel: array -> latex color model regex
+# - LaTeXConstant: array -> list of latex constants
+# - LaTeXDefinedCmd: array -> user defined command
+#
 
 BEGIN {
     initLaTeXCmd()
@@ -193,7 +196,7 @@ function defineNewCommand(name, definition, num,
 
 function defineNewCommandInFile(name, definition, num) {
     if (!isDefinedLaTeXCmd(name)) {
-        appendTo(defineNewCommand(name, definition, num), Files["output"]["def"])
+        appendTo(defineNewCommand(name, definition, num), AuxFiles["def"])
     } else {
        # warn("Command \"" name "\" is already defined")
     }
@@ -285,19 +288,19 @@ function compile(program,    i){
         program = "xelatex"
     }
 
-    chdir(Files["output"]["dir"])
+    chdir(AuxFiles["dir"])
     debug("Compile " i " time(s).")
     if (system(program " -halt-on-error -shell-escape main.tex" SUPOUT   )) {
         return FALSE
     }
-    chdir(Files["base"])
+    chdir(getFileDir(getOption("input")))
     return TRUE
 }
 
 function linearLaTeXDebug() {
 
     debug("Start linear debug.")
-    cleanContentsOf(Files["output"]["content"])
+    cleanContentsOf(AuxFiles["content"])
 
     if(!compile()){
         error("Unknown LaTeX error, please report.")
@@ -307,7 +310,7 @@ function linearLaTeXDebug() {
     
     for (i = 1; i <= length(ParsedBlocks); i++){
         
-        writeTo(buildLaTeXCmd("input", ParsedBlocks[i]["filename"]),  Files["output"]["content"])
+        writeTo(buildLaTeXCmd("input", ParsedBlocks[i]["filename"]),  AuxFiles["content"])
 
         if(!compile()) {
             error("Block " i  " contains syntax error :")

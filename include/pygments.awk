@@ -1,9 +1,10 @@
 
-@include "commons.awk"
-@include "io.awk"
-
-# TODO error if pygments isn't installed
-# pip3 install pygments
+#
+# Global variables:
+# - Pygments: string -> pygments version
+# - PygmentsLexers: array -> list of pygmentize lexers
+# - PygmentsStyles: array -> list of pygmentize code-highlighting styles
+#
 
 BEGIN {
     initPygments()

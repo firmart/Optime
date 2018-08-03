@@ -1,48 +1,16 @@
 #! /usr/bin/gawk -f 
 
-@include "io.awk"
-@include "string.awk"
-@include "array.awk"
-@include "metainfo.awk"
-@include "latex.awk"
-@include "options.awk"
-@include "pygments.awk"
-
-BEGIN {
-    initFiles()
-}
-
-###
-### Init functions
-###
-
-function initFiles() {
-
-    Files["input"]             = getAbsolutePath(ARGV[1])
-    Files["filename"]          = getFilename(Files["input"])
-    Files["base"]              = getFileDir(ARGV[1])
-    Files["source"]            = "/opt/" Command
-
-    Files["output"]["dir"]     = Files["base"] "/." Command "." Files["filename"] "/"
-    Files["output"]["colors"]  = Files["output"]["dir"] "preamble_colors.tex"
-    Files["output"]["def"]     = Files["output"]["dir"] "preamble_def.tex"
-    Files["output"]["content"] = Files["output"]["dir"] "content.tex"
-    Files["output"]["main"]    = Files["output"]["dir"] "main.tex"
-    Files["output"]["pdf"]     = Files["output"]["dir"] "main.pdf"
-
-}
-
 ###
 ### Utils functions
 ###
 
 # Copy templates 
 function copyTemplates(){
-    createDir(Files["output"]["dir"])
+    createDir(AuxFiles["dir"])
 
-    copyTo(Files["source"] "/templates/pgf-pie.sty", Files["output"]["dir"])
-    copyTo(Files["source"] "/templates/preamble_commands.tex", Files["output"]["dir"])
-    copyTo(Files["source"] "/templates/preamble_header_foot.tex", Files["output"]["dir"])
+    copyTo(InstallRoot "/templates/pgf-pie.sty", AuxFiles["dir"])
+    copyTo(InstallRoot "/templates/preamble_commands.tex", AuxFiles["dir"])
+    copyTo(InstallRoot "/templates/preamble_header_foot.tex", AuxFiles["dir"])
 }
 
 function writeMainTex(    array) {
@@ -75,7 +43,7 @@ function writeMainTex(    array) {
 
     writeTo( \
         "\\documentclass[10pt, a4paper]{article} \n" \
-        buildNestedLaTeXEnv(array), Files["output"]["dir"] "/main.tex")
+        buildNestedLaTeXEnv(array), AuxFiles["dir"] "/main.tex")
 }
 
 function writePreamblePackages(    array) {
@@ -110,6 +78,9 @@ function writePreamblePackages(    array) {
     if (Pygments)
         appendToArray("\\usepackage{minted}", array)
 
+    if (SageMath)
+        appendToArray("\\usepackage{" getFileDir(getOutput("command -v sage")) "/local/share/texmf/tex/latex/sagetex/sagetex" "}", array)
+
     appendToArray("\\usepackage{fontspec}", array)
     appendToArray("\\usepackage{fontawesome}", array)
     appendToArray("\\usepackage{xparse}", array)
@@ -117,7 +88,7 @@ function writePreamblePackages(    array) {
     appendToArray("\\usepackage[most]{tcolorbox}", array)
     appendToArray("\\tcbuselibrary{" (Pygments ? "minted," : NULLSTR) "skins, breakable}", array)
     
-    writeTo(join(array, "\n"), Files["output"]["dir"] "/preamble_packages.tex")
+    writeTo(join(array, "\n"), AuxFiles["dir"] "/preamble_packages.tex")
 }
 
 

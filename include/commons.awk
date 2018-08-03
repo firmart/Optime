@@ -1,5 +1,10 @@
 #! /usr/bin/gawk -f 
 
+#
+# Global variables:
+# - TRUE, FALSE: number -> boolean constant
+#
+
 BEGIN {
     initConst()
 }
@@ -9,17 +14,8 @@ BEGIN {
 ###
 
 function initConst() {
-    NULLSTR = ""
     TRUE    = 1
     FALSE   = 0
-
-    STDIN   = "/dev/stdin"
-    STDOUT  = "/dev/stdout"
-    STDERR  = "/dev/stderr"
-
-    SUPOUT  = " > /dev/null "  # suppress output
-    SUPERR  = " 2> /dev/null " # suppress error
-    PIPE    = " | "
 }
 
 ###
@@ -50,6 +46,10 @@ function getGitHead(    line, group) {
         return NULLSTR
 }
 
-function evalBool(str) {
-    return tolower(str) == "true"
+function evalBool(obj) {
+    if (isNum(obj)) return obj
+    if (obj == "0" || tolower(obj) ~ /^f(alse)?$/) {
+        return 0
+    } else 
+        return 1
 }

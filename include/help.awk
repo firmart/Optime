@@ -1,14 +1,17 @@
 #! /usr/bin/gawk -f
 
-@include "commons.awk"
-@include "io.awk"
-@include "log.awk"
-@include "metainfo.awk"
-@include "maths.awk"
-@include "pygments.awk"
+#
+# Global variables:
+# - SageMath: string -> SageMath version
+# - Platform: string -> Platform name
+#
 
 BEGIN {
-    print getVersion()
+    initSageMath()
+}
+
+function initSageMath() {
+    SageMath = isExistProgram("sage") ? getOutput("sage -v") : NULLSTR
 }
 
 # Return version as a string.
@@ -25,7 +28,8 @@ function getVersion(    build, gitHead) {
         sprintf("%-22s%s\n", "platform", Platform)                             \
         sprintf("%-22s%s\n", "gawk (GNU Awk)", cmpVersion(PROCINFO["version"], "4.2") >= 0 ? ansi("green", PROCINFO["version"]) : (ansi("red", PROCINFO["version"] " (version >= 4.2 is required)" )))  \
         sprintf("%-22s%s\n", "XeLaTeX", isExistProgram("xelatex") ? ansi("green", "[OK]") : ansi("red", "[NONE]")) \
-        sprintf("%-22s%s\n", "pygmentize", Pygments ? Pygments : ansi("yellow", "[NONE]") " (recommended for code highlighting)")  \
+        sprintf("%-22s%s\n", "pygmentize", Pygments ? ansi("green", Pygments) : ansi("yellow", "[NONE]") " (recommended for code highlighting)")  \
+        sprintf("%-22s%s\n", "SageMath", SageMath ? ansi("green", SageMath) : ansi("yellow", "[NONE]") " (recommended for maths and plotting)")  \
         sprintf("%-22s%s\n", "terminal type", ENVIRON["TERM"])                 \
         sprintf("%-22s%s\n", "init file", InitScript ? InitScript : "[NONE]")  \
         sprintf("\n%-22s%s", "Report bugs to:", "https://github.com/firmart/Optime/issues")
@@ -54,4 +58,8 @@ function cmpVersion(ver1, ver2,    i, group1, group2, len) {
         return -1
     else 
         return 0
+}
+
+function upgrade () {
+    #TODO implement upgrade()
 }

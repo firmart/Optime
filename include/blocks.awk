@@ -1,11 +1,14 @@
 #! /usr/bin/gawk -f 
 
-@include "commons.awk"
-@include "cmd.awk"
-@include "latex.awk"
-@include "symbols.awk"
-@include "maths.awk"
-@include "pygments.awk"
+#
+# Global variables:
+# - BlocksNB: number -> number of Blocks (sectionning include)
+# - CurrentScope: string -> current scope
+# - SectionsName: array -> list of sectionning name
+# - BlocksName: array -> list of blocks name (exclude sectionning)
+# - BlocksColumns: array -> contains for each block columns number used
+# - BlocksIcon: array -> contains icon code for each block (which use icon)
+#
 
 BEGIN {
     BlocksNB = 0
@@ -101,7 +104,7 @@ function buildBlock(blockStr,
     debug("Block " BlocksNB)
     debug("Block title : " blockTitle )
 
-    ParsedBlocks[BlocksNB]["filename"] = Files["filename"] ".block." BlocksNB ".tex" 
+    ParsedBlocks[BlocksNB]["filename"] = FileName ".block." BlocksNB ".tex" 
     ParsedBlocks[BlocksNB]["type"]     = blockType
     ParsedBlocks[BlocksNB]["title"]    = blockTitle
 
@@ -388,9 +391,9 @@ function imageBlock (blockHeader, contents) {
     for (i in contentsLine) {
         line = evalLine(contentsLine[i])
         if (line){
-                imgAbsPath = getAbsolutePathInFile(Files["input"], line)
+                imgAbsPath = getAbsolutePathInFile(getOption("input"), line)
                 if (fileExists(imgAbsPath)){
-                    copyTo(imgAbsPath, Files["output"]["dir"] BlocksNB)
+                    copyTo(imgAbsPath, AuxFiles["dir"] BlocksNB)
                 } else {
                     warn("Image \"" line "\" doesn't exist")
                     return NULLSTR
@@ -489,9 +492,9 @@ function getBlockTitle(blockHeader,
 function writeBlock(str,     blockStr, file) {
     BlocksNB++
     blockStr = buildBlock(str)
-    file = Files["output"]["dir"] Files["filename"] ".block." BlocksNB ".tex"
+    file = AuxFiles["dir"] FileName ".block." BlocksNB ".tex"
     if (blockStr){
-        blockStr = "\\input{" Files["filename"] ".colors." BlocksNB ".tex" "}\n" blockStr 
+        blockStr = "\\input{" FileName ".colors." BlocksNB ".tex" "}\n" blockStr 
         writeTo(blockStr, file)
         writeColors()
     }
@@ -500,7 +503,7 @@ function writeBlock(str,     blockStr, file) {
 #TODO modify if there is other type of options (probably)
 # Write block's color LaTeX code in appropriate file  
 function writeColors(    file) {
-    file = Files["output"]["dir"] Files["filename"] ".colors." BlocksNB ".tex"
+    file = AuxFiles["dir"] FileName ".colors." BlocksNB ".tex"
     cleanContentsOf(file)
     for(optionName in Option) {
         if (optionName == "textcolor") {

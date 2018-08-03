@@ -1,9 +1,11 @@
 #! /usr/bin/gawk -f
-@include "io.awk"
-@include "latex.awk"
-@include "parser.awk"
 
 #TODO: rename to eval.awk
+
+#
+# Global variables:
+# - CmdRegex: array -> Optime command regex
+
 
 BEGIN {
     initCmd()
@@ -88,7 +90,7 @@ function evalDefinecolor(cmdArray,    model) {
 
     trace("Color \"" cmdArray["opt"] "\" is defined as " cmdArray["contents"] " in model \"" model "\"." ) 
 
-    appendTo(definecolor(cmdArray["opt"], model, cmdArray["contents"]),  Files["output"]["colors"])
+    appendTo(definecolor(cmdArray["opt"], model, cmdArray["contents"]),  AuxFiles["colors"])
     appendToArray(cmdArray["opt"], AvailableColors)
     
     return NULLSTR
