@@ -10,13 +10,8 @@
 #
 
 
-
-# TODO delete array to prevent exists values
-function initMain() {
-
-    BlocksNB = 0
-    #CurrentScope = "default"
-
+function initCommons(){
+    
     # Dependencies
     initSageMath()
     initPygments()
@@ -45,16 +40,25 @@ function initMain() {
     # cmd.awk
     initCmd()
 
-    # colors.awk
-    initAvailableColors()
-    TotalDefaultColors = length(AvailableColors)
-
     # latex.awk
     initLaTeXCmd()
     initLaTeXConstant()
     initLaTeXColorModel()
     initLaTeXDefinedCmd()
     initLaTeXMathSep()
+}
+
+# TODO delete array to prevent exists values
+function initMain() {
+
+    # TODO Not init BlocksNB if need output merge
+    BlocksNB = 0
+    #CurrentScope = "default"
+
+    # colors.awk
+    initAvailableColors()
+    TotalDefaultColors = length(AvailableColors)
+
 
     # options.awk
     initOptions()
@@ -83,8 +87,6 @@ BEGIN {
     # TODO put these lines into an init function
     PREC="oct"
     CONVFMT="%.17g"
-    FS = "\n"
-    RS = ""
 
     ExitCode = 0
 
@@ -152,6 +154,8 @@ BEGIN {
 
     # Handle options
 
+    initCommons()
+
     ## Info only session
 
     switch (InfoOnly) {
@@ -168,43 +172,58 @@ BEGIN {
 
     ## I/O session
 
-    FileName = getFilename(getOption("input"))
+    while(!isEmpty(Option["input"])) {
+        FileName = getFilename(getOption("input"))
 
-    # TODO put these lines into a setup function
-    initMain()
-    copyTemplates()
-    cleanContentsOf(AuxFiles["content"])
-    writePreamblePackages()
-
-    #TODO should be call in the end
-    optimeMain()
+        # TODO put these lines into a setup function
+        initMain()
+        copyTemplates()
+        cleanContentsOf(AuxFiles["content"])
+        writePreamblePackages()
+        parseFile(getOption("input"))
+        optimeMain()
+        pop(Option["input"])
+    }
 
 }
 
 
-# TODO should call readFrom
-FNR == 1 {
 
-    #TODO define before cli option parsing
-    # cli option > file option > config option > default option
+#TODO define before cli option parsing
+# cli option > file option > config option > default option
+#TODO add comment # parsing
+function parseFile(file,    fileContent, record, fnr, recordN, lineN, line, i) {
 
-    cleanContentsOf(AuxFiles["def"])
-    cleanContentsOf(AuxFiles["colors"])
-    CurrentScope = "global"
-    for (i = 1; i <= NF; ++i) {
-        parseGlobalOptions($i);
+    fileContent = readFrom(file)
+    recordN = split(fileContent, record, "\n\n+")
+
+    for (fnr = 1; fnr <= recordN ; fnr++) {
+
+        lineN = split(record[fnr], line, "\n")
+        #TODO handle the case where there is no options.
+
+        if (fnr == 1) {
+
+            CurrentScope = "global"
+
+            cleanContentsOf(AuxFiles["def"])
+            cleanContentsOf(AuxFiles["colors"])
+
+            for (i = 1; i <= lineN; ++i) {
+                parseGlobalOptions(line[i]);
+            }
+
+            for (i in Option) {
+                defineOption(i)
+            }
+            # write main.tex after read user's options
+            #TODO main.tex name should depend filename,
+            # otherwise it will overwrite other's file output
+            writeMainTex()
+        } else if(line[1] ~ /^\s*[^#].*:.*$/) {
+            writeBlock(record[fnr])
+        }
     }
-
-    for (i in Option) {
-        defineOption(i)
-    }
-    # write main.tex after read user's options
-    writeMainTex()
-
-}
-
-$0 ~ /^\s*[^#].*:.*$/ {
-    writeBlock($0)
 }
 
 function optimeMain(    i) {
@@ -221,8 +240,12 @@ function optimeMain(    i) {
         linearLaTeXDebug()
         exit(-1)
     } else {
-        info("Compilation succeeded. " ansi("bold", getOption("output")) " is generated.")
-        copyTo(AuxFiles["pdf"], getOption("output"))
+        if (fileExists(AuxFiles["pdf"])){
+            info("Compilation succeeded. " ansi("bold", getOption("output")) " is generated.")
+            copyTo(AuxFiles["pdf"], getOption("output"))
+        } else {
+            warn("There is no file generated.")
+        }
     }
 }
 

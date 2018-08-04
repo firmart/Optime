@@ -82,10 +82,10 @@ function printArr(arr, num, sep,     i) {
 
     for (i in arr) {
         if (isarray(arr[i])) {
-            printf "%*s%s%s\n", num, " ", i, sep
+            printf "%*s%s%s\n", num, " ", ansi("red", i), sep
             printArr(arr[i], num + 4, sep)
         } else {
-            printf "%*s%s : %s\n", num, " ", i, arr[i]
+            printf "%*s%s : %s\n", num, " ", ansi("red", i), arr[i]
         }
     }
 }
