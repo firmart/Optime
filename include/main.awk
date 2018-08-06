@@ -12,6 +12,13 @@
 
 function initCommons(){
     
+
+
+    # Boolean, String and I/O constants
+    initConst()
+    initStrConst()
+    initIOConst()
+
     # Dependencies
     initSageMath()
     initPygments()
@@ -20,12 +27,6 @@ function initCommons(){
         getAvailableStyle(PygmentsStyles)
         getAvailableLexers(PygmentsLexers)
     }
-
-    # Boolean, String and I/O constants
-    initConst()
-    initStrConst()
-    initIOConst()
-
 
     #log.awk
     initAnsiCode()
@@ -69,6 +70,7 @@ function initMain() {
 
 function initSageMath() {
     SageMath = isExistProgram("sage") ? getOutput("sage -v") : NULLSTR
+    SageMathBlock = FALSE
 }
 
 function initAuxFiles() {
@@ -102,21 +104,21 @@ BEGIN {
         match(ARGV[pos], /^--?(V|vers(i(on?)?)?)$/)
         if (RSTART) {
             InfoOnly = "version"
-            continue
+            break
         }
 
         # -H, -help
         match(ARGV[pos], /^--?(H|h(e(lp?)?)?)$/)
         if (RSTART) {
             InfoOnly = "help"
-            continue
+            break
         }
 
         # -U, -upgrade
         match(ARGV[pos], /^--?(U|upgrade)$/)
         if (RSTART) {
             InfoOnly = "upgrade"
-            continue
+            break
         }
 
         # non-option argument
@@ -234,12 +236,18 @@ function optimeMain(    i) {
     }
 
     debug("Start of compilation.")
-    compileResult = compile()
-    if(!compileResult){
+
+    
+    if(!compile()){
         error("Compilation failed.")
         linearLaTeXDebug()
         exit(-1)
     } else {
+        if (SageMathBlock) { 
+            compile("sage")
+            compile("pythontex")
+        }
+        compile()
         if (fileExists(AuxFiles["pdf"])){
             info("Compilation succeeded. " ansi("bold", getOption("output")) " is generated.")
             copyTo(AuxFiles["pdf"], getOption("output"))

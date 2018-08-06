@@ -8,6 +8,14 @@ function initStrConst() {
     NULLSTR = ""
 }
 
+# return `string' repeated `n' times.
+function repeat(string, n,    i, str) {
+    for (i = 1; i <= n; i++) {
+        str = str string
+    }
+    return str
+}
+
 function replaceSubStringBy(string, start, end, replace, 
                             ############################
                             sstr1, sstr2) {

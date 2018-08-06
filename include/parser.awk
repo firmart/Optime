@@ -138,13 +138,13 @@ function escapeLaTeX(target,
             } else {
                 # OUTSIDE maths mode
 
-                gsub(/\\/,"\\textbackslash ", curSymb)
+                gsub(/\\/,"\\textbackslash~", curSymb)
                 gsub(/%/,"\\%", curSymb)
                 gsub(/#/,"\\#", curSymb)
                 gsub(/{/,"\\{", curSymb)
                 gsub(/}/,"\\}", curSymb)
-                gsub(/~/,"\\textasciitilde ", curSymb)
-                gsub(/\^/,"\\textasciicircum ", curSymb)
+                gsub(/~/,"\\textasciitilde~", curSymb)
+                gsub(/\^/,"\\textasciicircum~", curSymb)
 
                 if (curSymb == "`") {
 

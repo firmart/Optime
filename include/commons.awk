@@ -49,3 +49,7 @@ function evalBool(obj) {
     } else 
         return 1
 }
+
+function getTerminalWidth() {
+    return getOutput("tput cols") + 0
+}

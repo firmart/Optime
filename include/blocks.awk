@@ -38,7 +38,8 @@ function initBlocksName() {
     BlocksName["faq"   ] = "faq"          
     BlocksName["tex"   ] = "plainTex"     
     BlocksName["quotes"] = "quotes"     
-    BlocksName["img"]    = "image"     
+    BlocksName["img"   ] = "image"     
+    BlocksName["sage"  ] = "sageMath"    
 }
 
 function initBlocksColumns() {
@@ -54,6 +55,7 @@ function initBlocksColumns() {
     BlocksColumns["faq"   ] = 1
     BlocksColumns["tex"   ] = 1
     BlocksColumns["quotes"] = 1     
+    BlocksColumns["sage"  ] = 1     
 }
 
 function initBlocksIcon() {
@@ -83,6 +85,7 @@ function buildBlock(blockStr,
 
     CurrentScope = "block"
 
+    # remove old block options
     updateOptions()
 
     split(blockStr, blockLines, "\n")
@@ -90,7 +93,7 @@ function buildBlock(blockStr,
     blockTitle = getBlockTitle(blockLines[1])
     blockContents = join(blockLines, "\n", 2)
 
-    debug("------------------------------------------------------")
+    debug(repeat("-", getTerminalWidth() - 7))
     debug("Block " BlocksNB)
     debug("Block title : " blockTitle )
 
@@ -118,6 +121,72 @@ function buildBlock(blockStr,
         warn("Block type \"" blockType "\" is not available. Ignored.")
         return NULLSTR
     }
+}
+
+
+            # \sageplot
+            # \sageblock
+            # \sagesilent
+            #@sage.plot
+# SageMath block
+function sageMathBlock (blockHeader, contents,
+                        #####################
+                        blockType, blockTitle, blockContents, len, contentsLine, i, j, mCode, pCode, sageSilent) {
+
+    if (!SageMath) {
+        warn("SageMath is not installed !")
+        return NULLSTR
+    }
+
+    SageMathBlock = TRUE
+
+    blockType = getBlockType(blockHeader)
+    blockTitle = getBlockTitle(blockHeader)
+
+    # Title
+    blockContents = setTitle(blockTitle, blockType) 
+
+    # Contents
+    len = split(contents, contentsLine, "\n")
+    for (i = 1; i <= len; i++) {
+        
+        # note line (started by ">"
+        print "loop : " i
+        if (contentsLine[i] ~ /^\s*>>>\s*$/) {
+          # multiple-lines code 
+            j = i + 1
+            while(j <= len && contentsLine[j] !~ /^\s*<<<\s*$/) j++
+            mCode = ((j == i+1) ? NULLSTR : join(contentsLine, "\n", i + 1, j - 1))
+
+            print "loop : m : " (i + 1) " - " (j - 1)
+
+            if (mCode) {
+                blockContents = blockContents 
+                # code highlighting 
+                pCode = NULLSTR
+                for (k = i + 1; k <= j - 1; k++) pCode = pCode setRowColor("lightbackground")  buildLaTeXCmd("pygment", contentsLine[k], "sage") LaTeXConstant["tabular newline"] "\n"
+                blockContents = blockContents pCode  
+                # evaluate code in sage
+                sageSilent = sageSilent buildLaTeXEnv("sagesilent", mCode)  "\n"
+                # Display the last line as result
+                split(contentsLine[j - 1], expr, ";")
+                blockContents = blockContents setRowColor("white") fontStyle("bold", colorize("sage:", "blue")) " $" buildLaTeXCmd("sage", expr[length(expr)]) "$" LaTeXConstant["tabular newline"] "\n"
+            }
+            i = j
+        } else if (contentsLine[i] ~ /^\s*>\s*.*$/) {
+            blockContents = blockContents buildNoteLine(evalLine(escapeLaTeX(contentsLine[i])), BlocksColumns[blockType])
+        } else {
+                blockContents = blockContents setRowColor("lightbackground")
+                # code highlighting 
+                blockContents = blockContents buildLaTeXCmd("pygment", contentsLine[i], "sage") LaTeXConstant["tabular newline"] "\n"
+                # evaluate code in sage
+                sageSilent = sageSilent buildLaTeXEnv("sagesilent", contentsLine[i])  "\n"
+                # Display the last line as result
+                split(contentsLine[i], expr, ";")
+                blockContents = blockContents setRowColor("white") fontStyle("bold", colorize("sage:", "blue")) " $" buildLaTeXCmd("sage", expr[length(expr)]) "$" LaTeXConstant["tabular newline"] "\n"
+        }
+    }
+    return sageSilent buildLaTeXEnv(BlocksName["c"], blockContents)
 }
 
 # Vertical timeline block
@@ -274,7 +343,7 @@ function barChartBlock (blockHeader,
                 LaTeXConstant["tabular newline"] "\n"
         }
     }
-    return buildLaTeXEnv(Blocks[blockType]["cmdName"], blockContents)
+    return buildLaTeXEnv(BlocksName[blockType], blockContents)
 }
 
 # FAQ block

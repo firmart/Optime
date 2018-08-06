@@ -272,7 +272,7 @@ function buildLaTeXCmd(cmdName, contents, options, defaults,
 }
 
 
-function compile(program,    i){
+function compile(key, program,    i, currentDir){
     # compile three times
     # move to LaTeX dir to let pygmentize create 
 
@@ -280,12 +280,33 @@ function compile(program,    i){
         program = "xelatex"
     }
 
-    chdir(AuxFiles["dir"])
-    debug("Compile " i " time(s).")
-    if (system(program " -halt-on-error -shell-escape main.tex" SUPOUT   )) {
-        return FALSE
+    if (isNotDefined(key)) {
+        key = "normal"
     }
-    chdir(getFileDir(getOption("input")))
+
+    currentDir = getCurrentPath()
+
+    chdir(AuxFiles["dir"])
+    if (key == "normal") {
+        if (system(program " -halt-on-error -shell-escape main.tex" SUPOUT)) {
+            error(program " failed.")
+            return FALSE
+        }
+    } else if (key == "sage") {
+        if (system("sage" " main.sagetex.sage" SUPOUT SUPERR)) {
+            warn("Sage failed : \n")
+            warn(getOutput("sage" " main.sagetex.sage"))
+            return TRUE
+        }
+    } else if (key == "pythontex") {
+        if (system("pythontex3" " main.tex" SUPOUT)) {
+            warn("Pythontex failed : \n")
+            warn(getOutput("pythontex3" " main.tex"))
+            return TRUE
+        }
+    }
+
+    chdir(currentDir)
     return TRUE
 }
 

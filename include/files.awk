@@ -50,6 +50,7 @@ function writePreamblePackages(    array) {
 
     appendToArray("\\usepackage[dvipsnames]{xcolor}", array)
     appendToArray("\\usepackage{tikz}", array)
+    appendToArray("\\usepackage{pythontex}", array)
     appendToArray("\\usepackage{lscape}", array)
     appendToArray("\\usetikzlibrary{calc, matrix, fpu}", array)
     appendToArray("\\usepackage{pgf-pie}", array)
