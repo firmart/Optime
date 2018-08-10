@@ -1,5 +1,6 @@
 #! /usr/bin/gawk -f 
 
+# for chdir
 @load "filefuncs"
 
 #

@@ -12,16 +12,20 @@ function initStack(stack){
 
 
 function getTopValue(stack,    i) {
+
+    if (isEmpty(stack)) return NULLSTR
+
     for (i in stack[length(stack)]) {
         return stack[length(stack)][i]
     }
 }
 
 function getTopKey(stack,    i) {
+
     if (isEmpty(stack)) return NULLSTR
+
     for (i in stack[length(stack)]) {
-        if (i == 0) return NULLSTR
-        else return i
+        return i
     }
 }
 

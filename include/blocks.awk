@@ -97,7 +97,7 @@ function buildBlock(blockStr,
     debug("Block " BlocksNB)
     debug("Block title : " blockTitle )
 
-    ParsedBlocks[BlocksNB]["filename"] = FileName ".block." BlocksNB ".tex" 
+    ParsedBlocks[BlocksNB]["filename"] = "block." BlocksNB ".tex" 
     ParsedBlocks[BlocksNB]["type"]     = blockType
     ParsedBlocks[BlocksNB]["title"]    = blockTitle
 
@@ -123,11 +123,6 @@ function buildBlock(blockStr,
     }
 }
 
-
-            # \sageplot
-            # \sageblock
-            # \sagesilent
-            #@sage.plot
 # SageMath block
 function sageMathBlock (blockHeader, contents,
                         #####################
@@ -151,14 +146,11 @@ function sageMathBlock (blockHeader, contents,
     for (i = 1; i <= len; i++) {
         
         # note line (started by ">"
-        print "loop : " i
         if (contentsLine[i] ~ /^\s*>>>\s*$/) {
           # multiple-lines code 
             j = i + 1
             while(j <= len && contentsLine[j] !~ /^\s*<<<\s*$/) j++
             mCode = ((j == i+1) ? NULLSTR : join(contentsLine, "\n", i + 1, j - 1))
-
-            print "loop : m : " (i + 1) " - " (j - 1)
 
             if (mCode) {
                 blockContents = blockContents 
@@ -170,7 +162,7 @@ function sageMathBlock (blockHeader, contents,
                 sageSilent = sageSilent buildLaTeXEnv("sagesilent", mCode)  "\n"
                 # Display the last line as result
                 split(contentsLine[j - 1], expr, ";")
-                blockContents = blockContents setRowColor("white") fontStyle("bold", colorize("sage:", "blue")) " $" buildLaTeXCmd("sage", expr[length(expr)]) "$" LaTeXConstant["tabular newline"] "\n"
+                blockContents = blockContents setRowColor("white") fontStyle("bold", colorize("sage:", "blue")) buildLaTeXEnv("dmath*", buildLaTeXCmd("sage", expr[length(expr)]))  LaTeXConstant["tabular newline"] "\n"
             }
             i = j
         } else if (contentsLine[i] ~ /^\s*>\s*.*$/) {
@@ -183,7 +175,7 @@ function sageMathBlock (blockHeader, contents,
                 sageSilent = sageSilent buildLaTeXEnv("sagesilent", contentsLine[i])  "\n"
                 # Display the last line as result
                 split(contentsLine[i], expr, ";")
-                blockContents = blockContents setRowColor("white") fontStyle("bold", colorize("sage:", "blue")) " $" buildLaTeXCmd("sage", expr[length(expr)]) "$" LaTeXConstant["tabular newline"] "\n"
+                blockContents = blockContents setRowColor("white") fontStyle("bold", colorize("sage:", "blue")) buildLaTeXEnv("dmath*", buildLaTeXCmd("sage", expr[length(expr)])) LaTeXConstant["tabular newline"] "\n"
         }
     }
     return sageSilent buildLaTeXEnv(BlocksName["c"], blockContents)
@@ -445,12 +437,13 @@ function plainTexBlock (blockHeader, contents) {
 }
 
 # Image block
+# TODO use Image option instead of image block
 function imageBlock (blockHeader, contents) {
     split(contents, contentsLine, "\n")
     for (i in contentsLine) {
         line = evalLine(contentsLine[i])
         if (line){
-                imgAbsPath = getAbsolutePathInFile(getOption("input"), line)
+                imgAbsPath = getAbsolutePathInFile(getFrontValue(Input), line)
                 if (fileExists(imgAbsPath)){
                     copyTo(imgAbsPath, AuxFiles["dir"] BlocksNB)
                 } else {
@@ -548,21 +541,22 @@ function getBlockTitle(blockHeader,
 ### 
 
 # Write block's LaTeX code in appropriate file  
-function writeBlock(str,     blockStr, file) {
+function writeBlock(str,     blockStr, file, colorFile) {
     BlocksNB++
     blockStr = buildBlock(str)
-    file = AuxFiles["dir"] FileName ".block." BlocksNB ".tex"
+    file = AuxFiles["dir"] "block." BlocksNB ".tex"
+    colorFile = "colors." BlocksNB ".tex"
     if (blockStr){
-        blockStr = "\\input{" FileName ".colors." BlocksNB ".tex" "}\n" blockStr 
+        blockStr = input(colorFile) "\n" blockStr 
         writeTo(blockStr, file)
-        writeColors()
+        writeColors(AuxFiles["dir"] colorFile)
     }
 }
 
 #TODO modify if there is other type of options (probably)
 # Write block's color LaTeX code in appropriate file  
-function writeColors(    file) {
-    file = AuxFiles["dir"] FileName ".colors." BlocksNB ".tex"
+function writeColors(file) {
+
     cleanContentsOf(file)
     for(optionName in Option) {
         if (optionName == "textcolor") {

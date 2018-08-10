@@ -5,6 +5,25 @@ function initQueue(queue){
     delete queue[0]
 }
 
+function enqueue(queue, ele, key,   i){
+    for (i in queue) {
+        # loop to the rear
+    }
+    queue[i + 1][key] = ele
+}
+
+function dequeue(queue,    frontEle, front){
+
+    if (isEmpty(queue)) return NULLSTR
+
+    frontEle = getFrontValue(queue)
+
+    for (front in queue) {
+        delete queue[front]
+        break
+    }
+    return frontEle
+}
 
 function getFrontValue(queue,    front, i) {
 
@@ -27,27 +46,3 @@ function getFrontKey(queue,    front, i) {
         }
     }
 }
-
-function dequeue(queue,    frontEle, front){
-
-    if (isEmpty(queue)) return NULLSTR
-
-    frontEle = getFrontValue(queue)
-
-    for (front in queue) {
-        if(!isEmpty(queue[front])) {
-            delete queue[front]
-            break
-        }
-    }
-    return frontEle
-}
-
-function enqueue(queue, ele, key,   i){
-    for (i in queue) {
-        # loop to the front end
-    }
-    queue[i + 1][key] = ele
-}
-
-

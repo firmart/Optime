@@ -13,6 +13,7 @@
 
 function initAvailableColors() {
 
+    delete AvailableColors
     # LaTeX predefined color
     AvailableColors[1]  = "black"
     AvailableColors[2]  = "blue"

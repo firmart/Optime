@@ -6,6 +6,7 @@
 @include "include/string.awk"
 @include "include/array.awk"
 @include "include/stack.awk"
+@include "include/queue.awk"
 @include "include/symbols.awk"
 @include "include/pygments.awk"
 @include "include/maths.awk"

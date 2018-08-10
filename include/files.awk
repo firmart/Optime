@@ -7,7 +7,7 @@
 # Copy templates 
 function copyTemplates(){
     createDir(AuxFiles["dir"])
-
+    cleanContentsOf(AuxFiles["content"])
     copyTo(InstallRoot "/templates/pgf-pie.sty", AuxFiles["dir"])
     copyTo(InstallRoot "/templates/preamble_commands.tex", AuxFiles["dir"])
     copyTo(InstallRoot "/templates/preamble_header_foot.tex", AuxFiles["dir"])
@@ -71,6 +71,7 @@ function writePreamblePackages(    array) {
     appendToArray("\\usepackage{lastpage}", array)
     appendToArray("\\usepackage{seqsplit}", array)
     appendToArray("\\usepackage{amsmath}", array)
+    appendToArray("\\usepackage{breqn}", array)
     appendToArray("\\usepackage{amsfonts}", array)
     appendToArray("\\usepackage[BoldFont, SlantFont]{xeCJK}", array)
     appendToArray("\\setCJKmainfont{HanaMinA}", array)

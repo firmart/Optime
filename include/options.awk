@@ -1,8 +1,24 @@
+#! /usr/bin/gawk -f
 
 #
 # Global variables:
 # - Option: array of stack -> array contains options (each option is implement as stack)
 #
+
+function initScopePriority() {
+
+    # Sectioning
+    ScopePriority["block"         ] = 9
+    ScopePriority["subsubsection" ] = 8
+    ScopePriority["subsection"    ] = 7
+    ScopePriority["section"       ] = 6
+    ScopePriority["part"          ] = 5
+
+    ScopePriority["cli"           ] = 4
+    ScopePriority["file"          ] = 3
+    ScopePriority["config"        ] = 2
+    ScopePriority["default"       ] = 1
+}
 
 function initOptions(){
 
@@ -17,8 +33,6 @@ function initOptions(){
     addOption("headerfooter", "TRUE")
     addOption("landscape", "FALSE")
     #addOption("logo", "example-image-a")
-
-    addOption("output", FileName ".pdf")
 
     # log
     # TODO use number instead ?
@@ -60,18 +74,7 @@ function addOption(optionName, optionValue) {
 
     initEleAsArr(Option, optionName)
     initStack(Option[optionName])
-
-    if (getTopKey(Option[optionName]) == NULLSTR){
-        # new optionName, create stack
-        # first given value is the default's one
-        push(Option[optionName], optionValue, "default")
-    } else {
-        # existed option
-        while (!isEmpty(Option[optionName]) && scope2priority(getTopKey(Option[optionName])) <= scope2priority(CurrentScope)) {
-            pop(Option[optionName])
-        }
-        push(Option[optionName], optionValue, CurrentScope)
-    }
+    push(Option[optionName], optionValue, CurrentScope)
 }
 
 function parseGlobalOptions(str,
@@ -97,36 +100,20 @@ function getDefaultOption(optionName) {
 
 function updateOptions(    optionName) {
     for (optionName in Option) {
-        while (!isEmpty(Option[optionName]) && scope2priority(getTopKey(Option[optionName])) <= scope2priority(CurrentScope)) {
-            pop(Option[optionName])
+        while (!isEmpty(Option[optionName]) && 
+            scope2priority("part") <= scope2priority(CurrentScope) && 
+            scope2priority(getTopKey(Option[optionName])) >= scope2priority(CurrentScope)) {
+                pop(Option[optionName])
         }
     }
 }
 
 #TODO global -> file
 #TODO add config
-function scope2priority(section) {
-
-    scope["block"        ] = 1
-    scope["subsubsection"] = 2
-    scope["subsection"   ] = 3
-    scope["section"      ] = 4
-    scope["part"         ] = 5
-    scope["global"       ] = 6
-    scope["default"      ] = 7
-
-    return scope[section]
+function scope2priority(scope) {
+    return ScopePriority[scope]
 }
 
 function priority2scope(priority) {
-
-    scope[1] = "block"        
-    scope[2] = "subsubsection"
-    scope[3] = "subsection"   
-    scope[4] = "section"      
-    scope[5] = "part"         
-    scope[6] = "global"       
-    scope[7] = "default"       
-
-    return scope[priority]
+    return belongsTo(priority, ScopePriority)
 }
