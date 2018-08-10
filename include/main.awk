@@ -19,6 +19,7 @@ function initCommons(){
     # Dependencies
     initSageMath()
     initPygments()
+    initPythonTex3()
 
     if (Pygments) {
         getAvailableStyle(PygmentsStyles)
@@ -69,6 +70,10 @@ function initMain() {
 function initSageMath() {
     SageMath = isExistProgram("sage") ? getOutput("sage -v") : NULLSTR
     SageMathBlock = FALSE
+}
+
+function initPythonTex3() {
+    PythonTex3 = isExistProgram("pythontex3") ? getOutput("pythontex3 --version") : NULLSTR
 }
 
 function initAuxFiles() {
@@ -148,6 +153,7 @@ BEGIN {
         }
 
         # -o FILENAME, -output FILENAME
+        #TODO effective if there is only one file or with --merge
         match(ARGV[pos], /^--?o(u(t(p(ut?)?)?)?)?(=(.*)?)?$/, group)
         if (RSTART) {
             # TODO Stack up output filename for future dev (merge multiple input)
@@ -196,7 +202,6 @@ BEGIN {
 
     while(!isEmpty(Input)) {
 
-        print getFrontValue(Input)
         Output = getFilename(getFrontValue(Input)) ".pdf"
         initMain()
         copyTemplates()
@@ -204,6 +209,7 @@ BEGIN {
         parseFile(getFrontValue(Input))
         optimeMain()
         dequeue(Input)
+
     }
 
 }

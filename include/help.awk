@@ -23,6 +23,7 @@ function getVersion(    build, gitHead) {
         sprintf("%-22s%s\n", "XeLaTeX", isExistProgram("xelatex") ? ansi("green", "[OK]") : ansi("red", "[NONE]")) \
         sprintf("%-22s%s\n", "pygmentize", Pygments ? ansi("green", Pygments) : ansi("yellow", "[NONE]") " (recommended for code highlighting)")  \
         sprintf("%-22s%s\n", "SageMath", SageMath ? ansi("green", SageMath) : ansi("yellow", "[NONE]") " (recommended for maths and plotting)")  \
+        sprintf("%-22s%s\n", "pythontex3", PythonTex3 ? ansi("green", PythonTex3) : ansi("yellow", "[NONE]") " (mandatory if SageMath is used)")  \
         sprintf("%-22s%s\n", "terminal type", ENVIRON["TERM"])                 \
         sprintf("%-22s%s\n", "init file", InitScript ? InitScript : "[NONE]")  \
         sprintf("\n%-22s%s", "Report bugs to:", "https://github.com/firmart/Optime/issues")
