@@ -99,7 +99,7 @@ function escapeLaTeX(target,
         # get current symbol
         twoLenStr = join(charArr, NULLSTR, i, i+1)
         
-        if(twoLenStr == "\\*" || twoLenStr == "\\_"){
+        if(twoLenStr == "\\*" || twoLenStr == "\\_" || twoLenStr == "\\$"){
             curSymb = join(charArr, NULLSTR, i, i+1)
             i++
         }
@@ -138,13 +138,15 @@ function escapeLaTeX(target,
             } else {
                 # OUTSIDE maths mode
 
-                gsub(/\\/,"\\textbackslash~", curSymb)
-                gsub(/%/,"\\%", curSymb)
-                gsub(/#/,"\\#", curSymb)
-                gsub(/{/,"\\{", curSymb)
-                gsub(/}/,"\\}", curSymb)
-                gsub(/~/,"\\textasciitilde~", curSymb)
-                gsub(/\^/,"\\textasciicircum~", curSymb)
+                if (curSymb != "\\$") {
+                    gsub(/\\/,"\\textbackslash ", curSymb)
+                    gsub(/~/,"\\textasciitilde~", curSymb)
+                    gsub(/%/,"\\%", curSymb)
+                    gsub(/#/,"\\#", curSymb)
+                    gsub(/{/,"\\{", curSymb)
+                    gsub(/}/,"\\}", curSymb)
+                    gsub(/\^/,"\\textasciicircum ", curSymb)
+                }
 
                 if (curSymb == "`") {
 
