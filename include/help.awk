@@ -17,6 +17,7 @@ function getVersion(    build, gitHead) {
         build = gitHead ? "-git:" gitHead : ""
     }
 
+    # TODO write latex engine instead of xelatex.
     return ansi("bold", sprintf("%-22s%s%s\n\n", Name, Version, build))        \
         sprintf("%-22s%s\n", "platform", Platform)                             \
         sprintf("%-22s%s\n", "gawk (GNU Awk)", cmpVersion(PROCINFO["version"], "4.2") >= 0 ? ansi("green", PROCINFO["version"]) : (ansi("red", PROCINFO["version"] " (version >= 4.2 is required)" )))  \

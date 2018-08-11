@@ -69,11 +69,12 @@ function initMain() {
 
 function initSageMath() {
     SageMath = isExistProgram("sage") ? getOutput("sage -v") : NULLSTR
-    SageMathBlock = FALSE
+    SageMathUsed = FALSE
 }
 
 function initPythonTex3() {
     PythonTex3 = isExistProgram("pythontex3") ? getOutput("pythontex3 --version") : NULLSTR
+    PythonTexUsed = FALSE
 }
 
 function initAuxFiles() {
@@ -265,8 +266,10 @@ function optimeMain(    i) {
         linearLaTeXDebug()
         exit(-1)
     } else {
-        if (SageMathBlock) { 
+        if (SageMathUsed) { 
             compile("sage")
+            compile("pythontex")
+        } else if (PythonTexUsed) {
             compile("pythontex")
         }
         compile()

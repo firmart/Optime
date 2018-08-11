@@ -17,6 +17,7 @@ function initCmd() {
 
     # Text related commands
     CmdRegex["Link"]        = "(l|link)"
+    CmdRegex["Code"]        = "code"
     CmdRegex["Color"]       = "c(o(l(o(r?)?)?)?)?"
     CmdRegex["Fontawesome"] = "(font-awesome|fa)"
     CmdRegex["Keys"]        = "(keys?|k)"
@@ -56,6 +57,17 @@ function evalCmd(cmdArray,
         return @funcName(cmdArray)
     }
     
+}
+
+# Evaluate code command
+function evalCode(cmdArray) {
+    PythonTexUsed = TRUE
+    if (!PythonTex3) {
+        error("PythonTex3 is not installed.")
+        return NULLSTR
+    } else {
+        return buildLaTeXCmd("pygment", cmdArray["contents"], (isPygmentsLexer(cmdArray["opt"]) ? cmdArray["opt"] : "text"))
+    }
 }
 
 # Evaluate color command

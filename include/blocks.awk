@@ -510,7 +510,7 @@ function getProgLang(blockHeader,
     split(blockHeader, blockFields, ":")    
 
     if (length(blockFields) == 2) return "text"
-    else if (Pygments && !belongsTo(blockFields[2], PygmentsLexers)) {
+    else if (Pygments && !isPygmentsLexer(blockFields[2])) {
         warn("Lexer \"" blockFields[2] "\" doesn't exist.")
         return "text"
     } else {

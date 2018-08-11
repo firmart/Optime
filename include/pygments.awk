@@ -30,6 +30,10 @@ function getAvailableStyle(styleArr,
     }
 }
 
+function isPygmentsLexer(lexer) {
+    return belongsTo(lexer, PygmentsLexers)
+}
+
 function getAvailableLexers(plArr,
                             ######
                             lexers, lexersArr, j, line, str, tmpArr, i){
