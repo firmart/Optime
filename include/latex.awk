@@ -33,7 +33,7 @@ function initLaTeXColorModel(){
 
 function initLaTeXConstant() {
 
-    LaTeXConstant["tabular newline"   ] = "\\tn"
+    LaTeXConstant["tabular newline"   ] = "\\tabularnewline"
     LaTeXConstant["end line"          ] = "\\endlr"
     LaTeXConstant["unbreakable space" ] = "~"
 }
@@ -372,4 +372,10 @@ function buildNestedLaTeXEnv(latexArr,   i, tokens, ast,  mAst, stack, type, nam
     }
 
     return NLStr
+}
+
+# Let \pygment work with # and % in tabularx environment.
+# See https://tex.stackexchange.com/a/445685/125774
+function escapeSpecialCatCode(block) {
+    return "{\\catcode`\\#=12 \\catcode`\\%=12\n" block "\n}"
 }

@@ -543,7 +543,7 @@ function getBlockTitle(blockHeader,
 # Write block's LaTeX code in appropriate file  
 function writeBlock(str,     blockStr, file, colorFile) {
     BlocksNB++
-    blockStr = buildBlock(str)
+    blockStr = escapeSpecialCatCode(buildBlock(str))
     file = AuxFiles["dir"] "block." BlocksNB ".tex"
     colorFile = "colors." BlocksNB ".tex"
     if (blockStr){
