@@ -106,7 +106,11 @@ function buildBlock(blockStr,
         debug("Block type  : " BlocksName[blockType] )
 
         buildFun = BlocksName[blockType] "Block"
-        return @buildFun(blockLines[1], blockContents) addVspace("1.3em")
+        blockStr = @buildFun(blockLines[1], blockContents) addVspace("1.3em")
+        if (blockStr && blockType != "code" && blockType != "sage")
+            return escapeSpecialCatCode(blockStr)
+        else 
+            return blockStr
 
     } else if( blockType in SectionsName) {
 
@@ -133,7 +137,7 @@ function sageMathBlock (blockHeader, contents,
         return NULLSTR
     }
 
-    SageMathBlock = TRUE
+    SageMathUsed = TRUE
 
     blockType = getBlockType(blockHeader)
     blockTitle = getBlockTitle(blockHeader)
@@ -156,13 +160,13 @@ function sageMathBlock (blockHeader, contents,
                 blockContents = blockContents 
                 # code highlighting 
                 pCode = NULLSTR
-                for (k = i + 1; k <= j - 1; k++) pCode = pCode setRowColor("lightbackground")  buildLaTeXCmd("pygment", contentsLine[k], "sage") LaTeXConstant["tabular newline"] "\n"
+                for (k = i + 1; k <= j - 1; k++) pCode = pCode setRowColor("lightbackground")  buildLaTeXCmd("pygment", contentsLine[k], "sage") "\\tabularnewline" "\n"
                 blockContents = blockContents pCode  
                 # evaluate code in sage
                 sageSilent = sageSilent buildLaTeXEnv("sagesilent", mCode)  "\n"
                 # Display the last line as result
                 split(contentsLine[j - 1], expr, ";")
-                blockContents = blockContents setRowColor("white") fontStyle("bold", colorize("sage:", "blue")) buildLaTeXEnv("dmath*", buildLaTeXCmd("sage", expr[length(expr)]))  LaTeXConstant["tabular newline"] "\n"
+                blockContents = blockContents setRowColor("white") bold(colorize("sage:", "blue")) buildLaTeXEnv("dmath*", buildLaTeXCmd("sage", expr[length(expr)]))  "\\tabularnewline" "\n"
             }
             i = j
         } else if (contentsLine[i] ~ /^\s*>\s*.*$/) {
@@ -170,12 +174,12 @@ function sageMathBlock (blockHeader, contents,
         } else {
                 blockContents = blockContents setRowColor("lightbackground")
                 # code highlighting 
-                blockContents = blockContents buildLaTeXCmd("pygment", contentsLine[i], "sage") LaTeXConstant["tabular newline"] "\n"
+                blockContents = blockContents buildLaTeXCmd("pygment", contentsLine[i], "sage") "\\tabularnewline" "\n"
                 # evaluate code in sage
                 sageSilent = sageSilent buildLaTeXEnv("sagesilent", contentsLine[i])  "\n"
                 # Display the last line as result
                 split(contentsLine[i], expr, ";")
-                blockContents = blockContents setRowColor("white") fontStyle("bold", colorize("sage:", "blue")) buildLaTeXEnv("dmath*", buildLaTeXCmd("sage", expr[length(expr)])) LaTeXConstant["tabular newline"] "\n"
+                blockContents = blockContents setRowColor("white") bold(colorize("sage:", "blue")) buildLaTeXEnv("dmath*", buildLaTeXCmd("sage", expr[length(expr)])) "\\tabularnewline" "\n"
         }
     }
     return sageSilent buildLaTeXEnv(BlocksName["c"], blockContents)
@@ -205,7 +209,7 @@ function vtimeBlock (blockHeader,
                 # background color : alter between lightbackground and white
                 wrappedContent = wrappedContent \
                     line \
-                    LaTeXConstant["end line"] "\n"
+                    "\\endlr" "\n"
             }
         }
     }
@@ -287,7 +291,7 @@ function pieChartBlock (blockHeader,
         data = data dataValue[i] "/" dataName[i] (i == j ? "" : ", " )
     }
     return buildLaTeXEnv(BlocksName["c"], setTitle(blockTitle, blockType) blockContents "\n"  \
-        buildLaTeXCmd(BlocksName[blockType],  data, "", 10**exponent) LaTeXConstant["tabular newline"] "\n")
+        buildLaTeXCmd(BlocksName[blockType],  data, "", 10**exponent) "\\tabularnewline" "\n")
 }
 
 # Bar chart block
@@ -332,7 +336,7 @@ function barChartBlock (blockHeader,
                     evalLine(escapeLaTeX(data[1])) " & " \
                     hspace("6px") rule(len " cm", "6px")  " & " \
                     data[2] \
-                LaTeXConstant["tabular newline"] "\n"
+                "\\tabularnewline" "\n"
         }
     }
     return buildLaTeXEnv(BlocksName[blockType], blockContents)
@@ -363,7 +367,7 @@ function faqBlock (blockHeader,
                 blockContents = blockContents \
                     (i % 2 == 1 ? setRowColor("lightbackground") : setRowColor("white") hspace("6px") rule("2px", "6px") hspace("6px")) " " \
                     line \
-                    LaTeXConstant["tabular newline"] "\n"
+                    "\\tabularnewline" "\n"
             }
         }
     }
@@ -402,7 +406,7 @@ function columnBlock (blockHeader,
                 blockContents = blockContents \
                     (i % 2 == 1 ? setRowColor("lightbackground") : setRowColor("white")) " " \
                     (escapeFlag ? line : evalLine(contentsLine[i])) \
-                    LaTeXConstant["tabular newline"] "\n"
+                    "\\tabularnewline" "\n"
             }
         }
     }
@@ -543,7 +547,7 @@ function getBlockTitle(blockHeader,
 # Write block's LaTeX code in appropriate file  
 function writeBlock(str,     blockStr, file, colorFile) {
     BlocksNB++
-    blockStr = escapeSpecialCatCode(buildBlock(str))
+    blockStr = buildBlock(str)
     file = AuxFiles["dir"] "block." BlocksNB ".tex"
     colorFile = "colors." BlocksNB ".tex"
     if (blockStr){

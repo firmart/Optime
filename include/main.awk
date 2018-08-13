@@ -40,8 +40,6 @@ function initCommons(){
     initCmd()
 
     # latex.awk
-    initLaTeXCmd()
-    initLaTeXConstant()
     initLaTeXColorModel()
     initLaTeXDefinedCmd()
     initLaTeXMathSep()
@@ -255,8 +253,8 @@ function parseFile(file,    fileContent, record, fnr, recordN, lineN, line, i) {
 function optimeMain(    i) {
     # TODO: binary search debug
     for (i = 1; i <= length(ParsedBlocks); i++) {
-        appendTo(buildLaTeXCmd("input", "colors." i ".tex"), AuxFiles["content"])
-        appendTo(buildLaTeXCmd("input", ParsedBlocks[i]["filename"]), AuxFiles["content"])
+        appendTo(input("colors." i ".tex"), AuxFiles["content"])
+        appendTo(input(ParsedBlocks[i]["filename"]), AuxFiles["content"])
     }
 
     debug("Start of compilation.")

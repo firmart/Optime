@@ -140,7 +140,7 @@ function escapeLaTeX(target,
 
                 if (curSymb != "\\$") {
                     gsub(/\\/,"\\textbackslash ", curSymb)
-                    gsub(/~/,"\\textasciitilde~", curSymb)
+                    gsub(/~/,"\\textasciitilde ", curSymb)
                     gsub(/%/,"\\%", curSymb)
                     gsub(/#/,"\\#", curSymb)
                     gsub(/{/,"\\{", curSymb)
@@ -152,7 +152,7 @@ function escapeLaTeX(target,
 
                     if (getTopKey(stack) == "`"){
                         # END teletypefont
-                        contents = contents buildLaTeXCmd(LaTeXCmd["teletypefont"], pop(stack))
+                        contents = contents teletype(pop(stack))
                     } else {
                         # BEGIN teletypefont
                         push(stack, NULLSTR, curSymb)
@@ -181,7 +181,7 @@ function escapeLaTeX(target,
                         } else if (curSymb == "_") {
                             if (getTopKey(stack) == "_") {
                                 # END italic style font
-                                tmpString = buildLaTeXCmd(LaTeXCmd["italic"], pop(stack))
+                                tmpString = italic(pop(stack))
 
                                 if (isEmpty(stack)){
                                     contents = contents tmpString
@@ -196,7 +196,7 @@ function escapeLaTeX(target,
                         } else if (curSymb == "*") {
                             if (getTopKey(stack) == "*") {
                                 # END bold style font
-                                tmpString = buildLaTeXCmd(LaTeXCmd["bold"], pop(stack))
+                                tmpString = bold(pop(stack))
 
                                 if (isEmpty(stack)){
                                     contents = contents tmpString

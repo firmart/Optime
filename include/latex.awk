@@ -5,9 +5,7 @@
 
 #
 # Global variables:
-# - LaTeXCmd: array -> some latex command
 # - LaTeXColorModel: array -> latex color model regex
-# - LaTeXConstant: array -> list of latex constants
 # - LaTeXDefinedCmd: array -> user defined command
 #
 
@@ -29,13 +27,6 @@ function initLaTeXColorModel(){
     LaTeXColorModel["HTML"  ] = "[0-9A-Fa-f]{6}"
     LaTeXColorModel["cmyk"  ] = "((0(\\.[0-9]{0,2})?|1(\\.0{0,2})?)\\s*,\\s*){3}(0(\\.[0-9]{0,2})?|1(\\.0{0,2})?)"
     LaTeXColorModel["xcolor"] = "([a-zA-Z][a-zA-Z0-9]{0,31})(\\s*!\\s*([0-9]|[1-9][0-9])\\s*!\\s*([a-zA-Z][a-zA-Z0-9]{0,31}))*(\\s*!\\s*([0-9]|[1-9][0-9]))?"
-}
-
-function initLaTeXConstant() {
-
-    LaTeXConstant["tabular newline"   ] = "\\tabularnewline"
-    LaTeXConstant["end line"          ] = "\\endlr"
-    LaTeXConstant["unbreakable space" ] = "~"
 }
 
 function initLaTeXMathSep() {
@@ -63,44 +54,6 @@ function laTeXMathSepMatch(lhs, rhs) {
      else return FALSE
 }
 
-function initLaTeXCmd() {
-
-    # Font styles
-    LaTeXCmd["default"]        = "textnormal"
-    LaTeXCmd["emphasis"]       = "emph"
-    LaTeXCmd["romant"]         = "textrm"
-    LaTeXCmd["sans serif"]     = "textsf"
-    LaTeXCmd["teletypefont"]   = "texttt"
-    LaTeXCmd["upright"]        = "textup"
-    LaTeXCmd["italic"]         = "textit"
-    LaTeXCmd["slanted"]        = "textsl"
-    LaTeXCmd["small capitals"] = "textsc"
-    LaTeXCmd["upper case"]     = "uppercase"
-    LaTeXCmd["bold"]           = "textbf"
-    LaTeXCmd["medium"]         = "textmd"
-    LaTeXCmd["light"]          = "textlf"
-    LaTeXCmd["underline"]      = "ul"
-
-    # Image
-    LaTeXCmd["graphic"]      = "includegraphics"
-
-    # Hyperlink
-    LaTeXCmd["href"]         = "href"
-
-    # Color
-    LaTeXCmd["text color"]   = "textcolor"
-    LaTeXCmd["define color"] = "definecolor"
-    LaTeXCmd["color let"]    = "colorlet"
-
-    # Definition
-    LaTeXCmd["new cmd"]      = "newcommand"
-    LaTeXCmd["new env"]      = "newenvironment"
-
-    # Custom
-    LaTeXCmd["row color"]     = "SetRowColor"
-
-}
-
 function addVspace(len){
     return buildLaTeXCmd("par") buildLaTeXCmd("addvspace", len)
 }
@@ -113,21 +66,37 @@ function rule(x, y){
     return buildLaTeXCmd("rule", y, x)
 }
 
-function colorize(text, 
-                  color,
-                  #######
-                  options) {
+function colorize(text, color) {
 
-    # TODO: default color is textcolor
-    if (isNotDefined(color)){
+    if (isNotDefined(color))
         color = "textcolor"
-    }
 
-    return buildLaTeXCmd(LaTeXCmd["text color"], text, color)
+    return buildLaTeXCmd("textcolor", text, color)
 }
 
+function bold(text) {
+    return buildLaTeXCmd("textbf", text)
+}
+
+function italic(text) {
+    return buildLaTeXCmd("textit", text)
+}
+
+function teletype(text) {
+    return buildLaTeXCmd("texttt", text)
+}
+
+function underline(text) {
+    return buildLaTeXCmd("ul", text)
+}
+
+function href(text, url) {
+    return buildLaTeXCmd("href", text, url)
+}
+
+
 function setRowColor(color) {
-    return buildLaTeXCmd(LaTeXCmd["row color"], color)
+    return buildLaTeXCmd("SetRowColor", color)
 }
 
 
@@ -139,15 +108,15 @@ function buildNoteLine (string, columns,
                         ###############
                         contents) {
     sub(/^\s*>\s*/, "", string)
-    contents = buildFASymbol("StickyNoteO") LaTeXConstant["unbreakable space"] string
-    return setRowColor("lightbackground") buildColouredMulticolumn(contents , columns) LaTeXConstant["tabular newline"] "\n"
+    contents = buildFASymbol("StickyNoteO") "~" string
+    return setRowColor("lightbackground") buildColouredMulticolumn(contents , columns) "\\tabularnewline" "\n"
 }
 
 function setTitle(title, blockType){
     # TODO:contrast of title above darkbackground
     return setRowColor("darkbackground") \
-        buildColouredMulticolumn(BlocksIcon[blockType] LaTeXConstant["unbreakable space"] fontStyle("bold", colorize(title, "white")), BlocksColumns[blockType]) \
-        LaTeXConstant["tabular newline"] "\n"
+        buildColouredMulticolumn(BlocksIcon[blockType] "~" bold(colorize(title, "white")), BlocksColumns[blockType]) \
+        "\\tabularnewline" "\n"
 }
 
 function definecolor(colorName, 
@@ -163,11 +132,11 @@ function definecolor(colorName,
 
 
     if (model == "xcolor") {
-        return buildLaTeXCmd(LaTeXCmd["color let"], colorSpec, colorName)
+        return buildLaTeXCmd("colorlet", colorSpec, colorName)
     } else {
         options[1] = colorName
         options[2] = model
-        return buildLaTeXCmd(LaTeXCmd["define color"], colorSpec, options)
+        return buildLaTeXCmd("definecolor", colorSpec, options)
     }
 }
 
@@ -184,7 +153,7 @@ function defineNewCommand(name, definition, num,
     numString = isNotDefined(num) ? NULLSTR : "[" num "]"
     nameString = "{"  "\\" cmdName "}"
     defString = "{" definition "}"
-    return "\\" LaTeXCmd["new cmd"]  nameString  numString defString
+    return "\\" "newcommand"  nameString  numString defString
 }
 
 function defineNewCommandInFile(name, definition, num) {
@@ -193,11 +162,6 @@ function defineNewCommandInFile(name, definition, num) {
     } else {
        # warn("Command \"" name "\" is already defined")
     }
-}
-
-
-function fontStyle(code, text) {
-    return buildLaTeXCmd(LaTeXCmd[code], text)
 }
 
 function input(filename) {
@@ -318,13 +282,12 @@ function linearLaTeXDebug() {
 
     if(!compile()){
         error("Unknown LaTeX error, please report.")
-        #TODO shouldn't exit here
         exit -1
     }
     
     for (i = 1; i <= length(ParsedBlocks); i++){
         
-        writeTo(buildLaTeXCmd("input", ParsedBlocks[i]["filename"]),  AuxFiles["content"])
+        writeTo(input(ParsedBlocks[i]["filename"]),  AuxFiles["content"])
 
         if(!compile()) {
             error("Block " i  " contains syntax error :")
@@ -344,17 +307,14 @@ function buildNestedLaTeXEnv(latexArr,   i, tokens, ast,  mAst, stack, type, nam
     initStack(stack)
     for (i in latexArr) {
 
-        delete tokens
+        delete tokens; delete ast; delete mAst
         tokenize(tokens, latexArr[i]) 
-
-        delete ast
         parseJson(ast, tokens) 
-
-        delete mAst
         pseudoArrToMArr(ast, mAst)
 
         type = mAst[0]["type"]
         name = mAst[0]["name"]
+
         if (type == "environment") {
             NLStr = NLStr buildLaTeXEnvBeginTag(name, mAst[0]["options"], mAst[0]["defaults"])
             NLStr = NLStr mAst[0]["beginContent"] 

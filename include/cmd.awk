@@ -111,9 +111,9 @@ function evalLink(cmdArray,
     unixPathRegex = "^(([^\\/]+)?(\\/[^\\/]+)*\\/?)$"
     urlRegex = "^(https?:\\/\\/(www\\.)?)?[-a-zA-Z0-9@:%\\._\\+~#=]{2,256}\\.[a-z]{2,6}([-a-zA-Z0-9@:%_\\+\\.~#?&//=]*)$"
     if (cmdArray["contents"] ~ urlRegex){
-        return buildLaTeXCmd(LaTeXCmd["href"], fontStyle("underline", escapeLaTeX(cmdArray["opt"])), cmdArray["contents"])
+        return href(underline(escapeLaTeX(cmdArray["opt"])), cmdArray["contents"])
     } else if (cmdArray["contents"] ~ unixPathRegex) {
-        return buildLaTeXCmd(LaTeXCmd["href"], fontStyle("underline", escapeLaTeX(cmdArray["opt"])), "run:" cmdArray["contents"])
+        return href(underline(escapeLaTeX(cmdArray["opt"])), "run:" cmdArray["contents"])
     } else {
         warn("\"" cmdArray["contents"] "\" is not a correct url/path" )
         return cmdArray["contents"]
