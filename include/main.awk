@@ -221,33 +221,36 @@ function parseFile(file,    fileContent, record, fnr, recordN, lineN, line, i) {
     fileContent = readFrom(file)
     recordN = split(fileContent, record, "\n\n+")
 
+    cleanContentsOf(AuxFiles["def"])
+    cleanContentsOf(AuxFiles["colors"])
+
     for (fnr = 1; fnr <= recordN ; fnr++) {
 
         lineN = split(record[fnr], line, "\n")
         #TODO handle the case where there is no options.
 
-        if (fnr == 1) {
+        if(line[1] ~ /^\s*[^#].*:.*$/) {
+            writeBlock(record[fnr])
+        } else if (fnr == 1) {
 
             CurrentScope = "global"
 
-            cleanContentsOf(AuxFiles["def"])
-            cleanContentsOf(AuxFiles["colors"])
 
             for (i = 1; i <= lineN; ++i) {
                 parseGlobalOptions(line[i]);
             }
 
-            for (i in Option) {
-                defineOption(i)
-            }
-            # write main.tex after read user's options
-            #TODO main.tex name should depend filename,
-            # otherwise it will overwrite other's file output
-            writeMainTex()
-        } else if(line[1] ~ /^\s*[^#].*:.*$/) {
-            writeBlock(record[fnr])
         }
     }
+
+    for (i in Option) {
+        defineOption(i)
+    }
+
+    # write main.tex after read user's options
+    #TODO main.tex name should depend filename,
+    # otherwise it will overwrite other's file output
+    writeMainTex()
 }
 
 function optimeMain(    i) {

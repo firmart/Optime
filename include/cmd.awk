@@ -43,10 +43,8 @@ function escapeAmpersand(regex) {
 # Evaluate all commands of a string 
 function evalLine(string,    cmdInfo) {
     while (parseCommand(string, cmdInfo)){
-        print string = replaceSubStringBy(string, cmdInfo["start"], cmdInfo["end"], SUBSEP)
-        print escapeAmpersand(evalCmd(cmdInfo))
+        string = replaceSubStringBy(string, cmdInfo["start"], cmdInfo["end"], SUBSEP)
         sub(SUBSEP, escapeAmpersand(evalCmd(cmdInfo)), string)
-        print string
     }
     return string
 }
