@@ -334,7 +334,7 @@ function barChartBlock (blockHeader,
             blockContents = blockContents \
                 (i % 2 == 1 ? setRowColor("lightbackground") : setRowColor("white")  " ") \
                     evalLine(escapeLaTeX(data[1])) " & " \
-                    hspace("6px") rule(len " cm", "6px")  " & " \
+                    hspace("6bp") rule(len " cm", "6bp")  " & " \
                     data[2] \
                 "\\tabularnewline" "\n"
         }
@@ -365,7 +365,7 @@ function faqBlock (blockHeader,
             # background color : alter between lightbackground and white
             if (line) {
                 blockContents = blockContents \
-                    (i % 2 == 1 ? setRowColor("lightbackground") : setRowColor("white") hspace("6px") rule("2px", "6px") hspace("6px")) " " \
+                    (i % 2 == 1 ? setRowColor("lightbackground") : setRowColor("white") hspace("6bp") rule("2bp", "6bp") hspace("6bp")) " " \
                     line \
                     "\\tabularnewline" "\n"
             }
@@ -550,11 +550,10 @@ function writeBlock(str,     blockStr, file, colorFile) {
     blockStr = buildBlock(str)
     file = AuxFiles["dir"] "block." BlocksNB ".tex"
     colorFile = "colors." BlocksNB ".tex"
-    if (blockStr){
-        blockStr = input(colorFile) "\n" blockStr 
-        writeTo(blockStr, file)
-        writeColors(AuxFiles["dir"] colorFile)
-    }
+
+    blockStr = input(colorFile) "\n" blockStr 
+    writeTo(blockStr, file)
+    writeColors(AuxFiles["dir"] colorFile)
 }
 
 #TODO modify if there is other type of options (probably)

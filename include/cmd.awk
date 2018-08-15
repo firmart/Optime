@@ -35,11 +35,18 @@ function initCmd() {
 ### Eval functions
 ###
 
+function escapeAmpersand(regex) {
+     gsub(/&/, "\\\\&", regex) 
+     return regex
+}
+
 # Evaluate all commands of a string 
 function evalLine(string,    cmdInfo) {
     while (parseCommand(string, cmdInfo)){
-        string = replaceSubStringBy(string, cmdInfo["start"], cmdInfo["end"], SUBSEP)
-        sub(SUBSEP, evalCmd(cmdInfo), string)
+        print string = replaceSubStringBy(string, cmdInfo["start"], cmdInfo["end"], SUBSEP)
+        print escapeAmpersand(evalCmd(cmdInfo))
+        sub(SUBSEP, escapeAmpersand(evalCmd(cmdInfo)), string)
+        print string
     }
     return string
 }
