@@ -71,6 +71,9 @@ function colorize(text, color) {
     if (isNotDefined(color))
         color = "textcolor"
 
+    if (isNotDefined(text))
+        text = " "
+
     return buildLaTeXCmd("textcolor", text, color)
 }
 

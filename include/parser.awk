@@ -140,7 +140,7 @@ function escapeLaTeX(target,
 
                 if (curSymb != "\\$") {
                     gsub(/\\/,"\\textbackslash ", curSymb)
-                    gsub(/~/,"\\textasciitilde ", curSymb)
+                    gsub(/~/,"\\textasciitilde~", curSymb)
                     gsub(/%/,"\\%", curSymb)
                     gsub(/#/,"\\#", curSymb)
                     gsub(/{/,"\\{", curSymb)
