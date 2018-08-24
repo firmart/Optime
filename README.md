@@ -23,6 +23,14 @@ Still under testing !
 - bar chart : `bc`
 - pie chart : `pie`
 - timeline : `time`
+- quotes : `quotes`
+- sageMath block: `sage`
+
+|Code|Screenshots|
+|------|-------|
+|![](img/2018-08-07_589x240.png) | ![](img/2018-08-07_669x832.png) |
+
+
 
 ## Options
 
@@ -56,4 +64,9 @@ Still under testing !
  - linkcolor       = "Blue"
  - citecolor       = "LimeGreen"
  - urlcolor        = "OrangeRed"
-l
+
+## TODO
+
+- [ ] add unit test suite
+- [ ] refactor code
+- [ ] add credit 
