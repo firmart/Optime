@@ -109,12 +109,13 @@ function evalDefinecolor(cmdArray,    model) {
 }
 
 # Evaluate link command
+# TODO: add unit test with url contains parentheses
 function evalLink(cmdArray,
                   ########
                   unixPathRegex, urlRegex) {
     #TODO: add window path regex
     unixPathRegex = "^(([^\\/]+)?(\\/[^\\/]+)*\\/?)$"
-    urlRegex = "^(https?:\\/\\/(www\\.)?)?[-a-zA-Z0-9@:%\\._\\+~#=]{2,256}\\.[a-z]{2,6}([-a-zA-Z0-9@:%_\\+\\.~#?&//=]*)$"
+    urlRegex = "^(https?:\\/\\/(www\\.)?)?[-a-zA-Z0-9@:%\\._\\+~#=]{2,256}\\.[a-z]{2,6}([-a-zA-Z0-9@:%_\\+\\.\\(\\)~#?&//=]*)$"
     if (cmdArray["contents"] ~ urlRegex){
         return href(underline(escapeLaTeX(cmdArray["opt"])), cmdArray["contents"])
     } else if (cmdArray["contents"] ~ unixPathRegex) {
