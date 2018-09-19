@@ -74,11 +74,11 @@ function initEleAsArr(var, i) {
 # print recursively an array (included subarray)
 function printArr(arr, num, sep,     i) {
 
-    if (isNotDefined(sep)) {
+    if (missing(sep)) {
         sep = " : "
     }
 
-    if (isNotDefined(num)) {
+    if (missing(num)) {
         num = 0
     }
 

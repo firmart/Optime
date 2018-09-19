@@ -28,7 +28,7 @@ function initIOConst() {
 
 # Read from a file and return its content.
 function readFrom(file,    line, text) {
-    if (isNotDefined(file)) file = STDIN
+    if (missing(file)) file = STDIN
     text = NULLSTR
     while (getline line < file)
         text = (text ? text "\n" : NULLSTR) line
@@ -37,14 +37,14 @@ function readFrom(file,    line, text) {
 
 # Write text to file.
 function writeTo(text, file) {
-    if (isNotDefined(file)) file = STDOUT
+    if (missing(file)) file = STDOUT
     # use shell ">", note that awk's ">" behave differently
     system("printf " parameterize(text) "\\\\n" " > " parameterize(file))
 }
 
 # Append text to file.
 function appendTo(text, file) {
-    if (isNotDefined(file)) file = STDOUT
+    if (missing(file)) file = STDOUT
     # use shell ">>", note that awk's ">>" behave differently
     system("printf " parameterize(text) "\\\\n" " >> " parameterize(file))
 }
@@ -119,7 +119,7 @@ function getAbsolutePath(path, dotPath,
                          ##############
                          charArr) {
 
-    if (isNotDefined(dotPath)) {
+    if (missing(dotPath)) {
         dotPath = getCurrentPath()
     }
 

@@ -29,7 +29,7 @@ function parseCommand(cmdStr,
                       #########
                       i, cmdChar, cmdStrLen, cmdName, optName, contents, end) {
 
-    if (isNotDefined(start)){
+    if (missing(start)){
         start = findFirstNonEscapedChar(cmdStr, "@")
     }
     if (start == 0) return FALSE
@@ -85,6 +85,7 @@ function printCmd (result,
         print
 }
 
+# TODO add ~~ xxx ~~ 
 function escapeLaTeX(target,
                      #######
                      contents, stack, charArr, i, twoLenStr, curSymb, tmpString, len) {

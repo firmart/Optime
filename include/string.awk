@@ -72,7 +72,7 @@ function unescape(string) {
 
 # Return the escaped, quoted string.
 function parameterize(string, quotationMark) {
-    if (isNotDefined(quotationMark)) {
+    if (missing(quotationMark)) {
         quotationMark = "'"
     }
 

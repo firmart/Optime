@@ -23,7 +23,7 @@ function isNum(string) {
 }
 
 # Used to test if parameter is given
-function isNotDefined(obj){
+function missing(obj){
     return length(obj) == 0
 }
 

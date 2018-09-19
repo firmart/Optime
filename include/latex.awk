@@ -68,10 +68,10 @@ function rule(x, y){
 
 function colorize(text, color) {
 
-    if (isNotDefined(color))
+    if (missing(color))
         color = "textcolor"
 
-    if (isNotDefined(text))
+    if (missing(text))
         text = " "
 
     return buildLaTeXCmd("textcolor", text, color)
@@ -107,12 +107,17 @@ function buildColouredMulticolumn(string, columns){
     return buildLaTeXCmd("colouredMulticolumn", string, columns)   
 }
 
-function buildNoteLine (string, columns,
+function buildNoteLine (string, columns, color,
                         ###############
                         contents) {
+
+    if (missing(color)) {
+        color = "white"
+    }
+
     sub(/^\s*>\s*/, "", string)
     contents = buildFASymbol("StickyNoteO") "~" string
-    return setRowColor("lightbackground") buildColouredMulticolumn(contents , columns) "\\tabularnewline" "\n"
+    return setRowColor(color) buildColouredMulticolumn(contents , columns) "\\tabularnewline" "\n"
 }
 
 function setTitle(title, blockType){
@@ -153,7 +158,7 @@ function defineNewCommand(name, definition, num,
         return NULLSTR
     }
     appendToArray(cmdName, LaTeXDefinedCmd)
-    numString = isNotDefined(num) ? NULLSTR : "[" num "]"
+    numString = missing(num) ? NULLSTR : "[" num "]"
     nameString = "{"  "\\" cmdName "}"
     defString = "{" definition "}"
     return "\\" "newcommand"  nameString  numString defString
@@ -173,7 +178,7 @@ function input(filename) {
 
 function buildLaTeXEnvBeginTag(envName, options, defaults,     i, optStr, defaultStr) {
 
-    if (isNotDefined(options)) {
+    if (missing(options)) {
         optStr = ""
     } else if (!isarray(options)) {
         optStr = "{" options "}"
@@ -183,7 +188,7 @@ function buildLaTeXEnvBeginTag(envName, options, defaults,     i, optStr, defaul
         }
     }
 
-    if (isNotDefined(defaults)) {
+    if (missing(defaults)) {
         defaultStr = ""
     } else if (!isarray(defaults)) {
         defaultStr = "[" defaults "]"
@@ -212,11 +217,11 @@ function buildLaTeXCmd(cmdName, contents, options, defaults,
                        #########
                        i, optStr) {
 
-    if (isNotDefined(contents)) {
+    if (missing(contents)) {
         return "\\" cmdName 
     }
 
-    if (isNotDefined(options)) {
+    if (missing(options)) {
         optStr = ""
     } else if (!isarray(options)) {
         optStr = "{" options "}"
@@ -226,7 +231,7 @@ function buildLaTeXCmd(cmdName, contents, options, defaults,
         }
     }
 
-    if (isNotDefined(defaults)) {
+    if (missing(defaults)) {
         defaultStr = ""
     } else if (!isarray(defaults)) {
         defaultStr = "[" defaults "]"
@@ -244,11 +249,11 @@ function compile(key, program,    i, currentDir, retValue){
     # compile three times
     # move to LaTeX dir to let pygmentize create 
 
-    if (isNotDefined(program)) {
+    if (missing(program)) {
         program = "xelatex"
     }
 
-    if (isNotDefined(key)) {
+    if (missing(key)) {
         key = "normal"
     }
 

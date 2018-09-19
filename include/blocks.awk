@@ -383,7 +383,7 @@ function columnBlock (blockHeader,
                       ##########
                       blockContents, i, contentsLine, blockType, blockTitle) {
 
-    if (isNotDefined(escapeFlag))
+    if (missing(escapeFlag))
         escapeFlag = 1
 
     blockType = getBlockType(blockHeader)
@@ -396,10 +396,11 @@ function columnBlock (blockHeader,
     split(contents, contentsLine, "\n")
     for (i in contentsLine) {
         line = evalLine(escapeLaTeX(contentsLine[i]))
+        # TODO escape \&
 
         # note line (started by ">")
         if (contentsLine[i] ~ /^\s*>\s*.*$/) {
-            blockContents = blockContents buildNoteLine(line, BlocksColumns[blockType])
+            blockContents = blockContents (i % 2 == 1 ? buildNoteLine(line, BlocksColumns[blockType], "lightbackground") : buildNoteLine(line, BlocksColumns[blockType])) 
         } else {
             if (line){
                 # background color : alter between lightbackground and white
